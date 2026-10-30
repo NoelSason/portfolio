@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Noel Sason</title>
+  <meta name="description" content="Noel Sason studies Data Science and Molecular & Cell Biology at UC Berkeley, does research where computing meets biology, and builds study tools for students.">
+  <meta name="theme-color" content="#F3F6F9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1A2B" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Noel Sason">
+  <meta property="og:description" content="Data Science and Molecular & Cell Biology at UC Berkeley. There's a gene on this page with a message in it.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="#top">Noel Sason</a>
+      <nav class="site-nav" aria-label="Sections">
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <button class="gene-button" type="button" data-open-gene>
+        <svg class="bases-glyph" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <rect x="1" y="5" width="2.5" height="8" rx="1" class="fill-a"/>
+          <rect x="4.8" y="2" width="2.5" height="11" rx="1" class="fill-c"/>
+          <rect x="8.6" y="7" width="2.5" height="6" rx="1" class="fill-g"/>
+          <rect x="12.4" y="4" width="2.5" height="9" rx="1" class="fill-t"/>
+        </svg>
+        Translate the gene
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="wrap">
+        <h1 id="hero-title">Noel Sason</h1>
+        <p class="hero-lede">I'm a junior at UC Berkeley studying Data Science and Molecular &amp; Cell Biology. I do research where computing meets biology, and I build study tools for students.</p>
+
+        <figure class="trace-figure">
+          <div class="trace-scroll">
+            <button class="trace-button" type="button" data-open-gene aria-label="Open the gene translator">
+              <svg id="trace" class="trace" viewBox="0 0 640 176" role="img" aria-labelledby="trace-title">
+                <title id="trace-title">A DNA sequencing trace of a 42-base gene, with one colored peak per base</title>
+              </svg>
+            </button>
+          </div>
+          <figcaption class="trace-caption">
+            <p>This sequencing trace is a real, working gene, and its protein spells out a message. A gut bacterium can't read all of it.</p>
+            <button class="button button-primary" type="button" data-open-gene>Translate the gene</button>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="wrap section-grid">
+        <h2 id="about-title">About me</h2>
+        <div class="section-body">
+          <div class="prose">
+            <p>I'm a junior at UC Berkeley, Class of 2028, double majoring in Data Science and Molecular &amp; Cell Biology. In data science my emphasis is computational biology. In biology I'm on the developmental genetics track.</p>
+            <p>I do research in three groups. At Lawrence Berkeley National Laboratory, I write the statistical analysis for a study of how disease changes the microbes that live in the body. In the Lewis Lab, I'm learning computational protein design. In Berkeley's Computational Approaches to Human Learning lab, I'm making the images in an open-source math tutor readable to screen readers.</p>
+            <p>Outside research, I build Scope, a set of study tools I started in early 2026: a Chrome extension that searches a student's course materials, and Lectra, an iPad app for reading and marking them up. I also co-lead the South Indian Society at Berkeley, a student organization with more than 200 members.</p>
+            <p>I want to work on AI for biology, including the evaluations that show when a model, or a published result, doesn't hold up. A lot of my recent work is that kind of checking.</p>
+          </div>
+          <dl class="facts">
+            <div><dt>Studying</dt><dd>Data Science and Molecular &amp; Cell Biology</dd></div>
+            <div><dt>Graduating</dt><dd>2028</dd></div>
+            <div><dt>Based in</dt><dd>Berkeley and Santa Clarita, California</dd></div>
+            <div><dt>Languages</dt><dd>English and Malayalam</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="skills" aria-labelledby="skills-title">
+      <div class="wrap section-grid">
+        <h2 id="skills-title">Skills</h2>
+        <div class="section-body">
+          <div class="skill-groups">
+            <div class="skill-group">
+              <h3>Programming</h3>
+              <p>Python, Swift, TypeScript and JavaScript, SQL, Java, and Bash.</p>
+            </div>
+            <div class="skill-group">
+              <h3>Data and machine learning</h3>
+              <p>pandas, Polars, NumPy, scikit-learn, PyTorch, and DuckDB. Statistics for messy real data: permutation tests, bootstrap intervals, and multiple-testing correction.</p>
+            </div>
+            <div class="skill-group">
+              <h3>Evaluation</h3>
+              <p>Held-out test sets, honest baselines, and checks that a number means what it claims. Most of my projects have one, and some have failed it.</p>
+            </div>
+            <div class="skill-group">
+              <h3>Apps and the web</h3>
+              <p>SwiftUI, UIKit, and PDFKit on iPad and Mac. Chrome extensions, Next.js, React, and Electron.</p>
+            </div>
+            <div class="skill-group">
+              <h3>Cloud and infrastructure</h3>
+              <p>AWS Amplify Hosting, Supabase (Postgres, row-level security, Edge Functions), Vercel, Docker, Linux, and Slurm clusters.</p>
+            </div>
+            <div class="skill-group">
+              <h3>Biology</h3>
+              <p>Molecular biology, genetics, and biochemistry. Biological ontologies and knowledge graphs. Learning BindCraft for protein design.</p>
+            </div>
+          </div>
+          <div class="how-i-build">
+            <h3>How I build</h3>
+            <p>I build with coding agents. Claude Code and Codex write most of my code. I decide what to build, define what done means with tests and evaluations, review the changes, and check the result on real devices and real data.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects" aria-labelledby="projects-title">
+      <div class="wrap section-grid">
+        <h2 id="projects-title">Projects</h2>
+        <div class="section-body">
+          <p class="section-note">Each project has a status, because a prototype and a shipped product aren't the same thing.</p>
+          <ol class="project-list" role="list">
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="shipped">Shipped</span>
+                <span class="project-when">Founder, 2026 to now</span>
+              </div>
+              <div class="project-body">
+                <h3>Scope and Lectra</h3>
+                <p>Study tools for college students. Scope for Canvas is a Chrome extension that searches a student's course files, pages, and assignments. Lectra Notes is an iPad app for reading and marking up PDFs with Apple Pencil, on the App Store since July 2026. As of October 2026, the apps have 400+ installs and 212 registered accounts.</p>
+                <p class="project-stack">Swift, SwiftUI, PDFKit, JavaScript, Supabase</p>
+                <p class="project-links">
+                  <a href="https://apps.apple.com/us/app/id6759754531">Lectra on the App Store</a>
+                  <a href="https://canvascope.org">Scope website</a>
+                </p>
+              </div>
+            </li>
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="research">Research</span>
+                <span class="project-when">Independent, October 2026</span>
+              </div>
+              <div class="project-body">
+                <h3>Auditing an imagined-speech EEG benchmark</h3>
+                <p>A published benchmark asks a model to tell which of 39 words a person is imagining from their brain signals. I tested whether it measures that. A baseline that never looks at the EEG, only at the previous word, scored 18.8%, above the published 13.88%. With whole recording runs held out, real labels beat shuffled labels by only 0.64 points, within noise. One participant, self-published, not peer-reviewed.</p>
+                <p class="project-stack">Python, PyTorch, scikit-learn</p>
+                <p class="project-links"><a href="https://github.com/NoelSason/eegwords">Paper and code on GitHub</a></p>
+              </div>
+            </li>
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="research">Research</span>
+                <span class="project-when">Research affiliate, 2026 to now</span>
+              </div>
+              <div class="project-body">
+                <h3>Microbial traits at Berkeley Lab</h3>
+                <p>Statistical analysis for a study, not yet published, that links more than 900 microbiome studies to a knowledge graph of microbial traits. The question: does disease shift the microbes at a body site toward traits like oxygen tolerance? I resolved all 17 issues from the lead scientist's statistical review and tested all 317 traits with correction for multiple comparisons. Nine of my pull requests are merged.</p>
+                <p class="project-stack">Python, DuckDB, pandas, biological ontologies</p>
+              </div>
+            </li>
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="prototype">Prototype</span>
+                <span class="project-when">Cal Hacks 13.0, solo</span>
+              </div>
+              <div class="project-body">
+                <h3>Overclock</h3>
+                <p>A browser agent that plans a multi-app office task once, compiles the plan into a program it can check, and replays it without asking the model again. On the hackathon's mock apps and its own checker, it reconciled 500 of 500 records in a median 13.8 seconds, re-reading every write to confirm it. It failed at sign-in on an app it had never seen, so it doesn't generalize yet.</p>
+                <p class="project-stack">TypeScript, Playwright, SQLite, Claude</p>
+                <p class="project-links"><a href="https://github.com/NoelSason/Overclock">Code on GitHub</a></p>
+              </div>
+            </li>
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="prototype">Prototype</span>
+                <span class="project-when">Cal Hacks 13.0, team of 3</span>
+              </div>
+              <div class="project-body">
+                <h3>Blink2Talk</h3>
+                <p>A communication aid for a patient who is awake but can't speak or use their hands. A nurse talks, the app offers three replies plus "none of these," and the patient picks one by looking at it and holding their eyes closed. The reply is spoken aloud. I built the patient app and led the design. It has never been used with a patient.</p>
+                <p class="project-stack">Electron, JavaScript, Claude, Figma</p>
+                <p class="project-links"><a href="https://github.com/NoelSason/blink2talk">Code on GitHub</a></p>
+              </div>
+            </li>
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="prototype">Prototype</span>
+                <span class="project-when">Solo, fall 2026</span>
+              </div>
+              <div class="project-body">
+                <h3>Control</h3>
+                <p>A Mac app that fills the form field you're in from a private local vault when you double-tap the Command key. Any drop in accuracy on 851 labelled fields fails the build. Accuracy rose from 79.8% to 89.9%, and from 79.1% to 89.3% on fields never used for tuning.</p>
+                <p class="project-stack">Swift, SwiftUI, AppKit, macOS Accessibility</p>
+                <p class="project-links"><a href="https://github.com/NoelSason/CommandSquared">Code on GitHub</a></p>
+              </div>
+            </li>
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="shipped">Used live</span>
+                <span class="project-when">Co-president, September 2026</span>
+              </div>
+              <div class="project-body">
+                <h3>Board recruitment for the South Indian Society</h3>
+                <p>The software and process behind our 2026–27 board recruitment. It handled 88 applicants with blind, reviewer-calibrated scoring, scheduled 61 interviews across 29 interviewers in 4 days, and delivered 88 of 88 decision emails.</p>
+                <p class="project-stack">Next.js, TypeScript, Redis, Google APIs</p>
+              </div>
+            </li>
+            <li class="project">
+              <div class="project-meta">
+                <span class="status" data-status="submitted">Submitted</span>
+                <span class="project-when">Swift Student Challenge 2026</span>
+              </div>
+              <div class="project-body">
+                <h3>One Base Change</h3>
+                <p>An iPad app for editing DNA one base at a time and watching the ribosome translate it, codon by codon. It labels each change as silent, missense, nonsense, or frameshift, with real genes to try, such as HBB (hemoglobin) and LCT (lactase). The gene on this page is its small cousin.</p>
+                <p class="project-stack">Swift, SwiftUI</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-contact" id="contact" aria-labelledby="contact-title">
+      <div class="wrap section-grid">
+        <h2 id="contact-title">Contact</h2>
+        <div class="section-body">
+          <p class="contact-lede">I'm looking for a Summer 2027 internship in software, machine learning, or research engineering. Email is the fastest way to reach me.</p>
+          <ul class="contact-list" role="list">
+            <li><a href="mailto:noel_sason@berkeley.edu">noel_sason@berkeley.edu</a></li>
+            <li><a href="https://github.com/NoelSason">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/noelsason">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© 2026 Noel Sason. <a href="https://github.com/NoelSason/portfolio">Source code</a></p>
+    </div>
+  </footer>
+
+  <dialog class="gene-dialog" id="gene-dialog" aria-labelledby="gene-title">
+    <div class="gene-panel">
+      <div class="gene-head">
+        <h2 id="gene-title">Translate the gene</h2>
+        <button class="icon-button" type="button" data-close-gene aria-label="Close">
+          <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        </button>
+      </div>
+
+      <p class="gene-intro">The trace on the home page is this gene. A ribosome reads its RNA three letters at a time and adds one amino acid for each. Every amino acid has a one-letter code, so the protein spells something.</p>
+
+      <fieldset class="organism">
+        <legend>Whose ribosome reads it?</legend>
+        <label class="organism-option">
+          <input type="radio" name="organism" value="ecoli" checked>
+          <span><i>E. coli</i>, a gut bacterium</span>
+        </label>
+        <label class="organism-option">
+          <input type="radio" name="organism" value="mbarkeri">
+          <span><i>Methanosarcina barkeri</i>, a methane-making microbe</span>
+        </label>
+      </fieldset>
+
+      <p class="strip-key">Each column is one codon: DNA on top, RNA in the middle, and the amino acid it codes for at the bottom. Select a DNA letter to change it.</p>
+      <div class="gene-strip" id="gene-strip" role="group" aria-label="The gene, one column per codon"></div>
+
+      <div class="gene-actions">
+        <button class="button button-primary" type="button" id="translate-button">Translate</button>
+        <button class="button" type="button" id="reset-button">Reset the gene</button>
+      </div>
+
+      <p class="protein-line"><span class="protein-label">Protein</span> <output id="protein-output" class="protein-output" aria-live="off"></output></p>
+      <p class="gene-status" id="gene-status" role="status">Pick an organism, then translate.</p>
+
+      <div class="gene-reveal" id="gene-reveal" hidden>
+        <p class="reveal-message" aria-label="Meet Noel Sason">MEET NOEL SASON</p>
+        <p>You read my name. A human cell can't: we have no amino acid for O. O is pyrrolysine, the 22nd amino acid, and only some microbes, like this one, read UAG as pyrrolysine instead of "stop."</p>
+        <p>Now select any DNA letter to see what a single change does. I built a whole app around that idea, One Base Change, for Apple's Swift Student Challenge in 2026.</p>
+        <p class="reveal-count" id="reveal-count" hidden></p>
+      </div>
+
+      <div class="name-tool">
+        <h3>Write your name in protein</h3>
+        <label class="name-label" for="name-input">Your first name</label>
+        <input class="name-input" id="name-input" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <div class="name-output" id="name-output" aria-live="polite"></div>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

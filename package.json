@@ -1,0 +1,10 @@
+{
+  "name": "noel-sason-portfolio",
+  "private": true,
+  "type": "module",
+  "description": "Noel Sason's portfolio, hosted on AWS Amplify Hosting.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "start": "python3 -m http.server 4173 --directory site"
+  }
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Architecture</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<style>
+  body { margin: 0; background: #f3f6f9; font-family: "Atkinson Hyperlegible Next", sans-serif; color: #14243a; }
+  svg { display: block; }
+  .box { fill: #ffffff; stroke: #14243a; stroke-width: 2; }
+  .group { fill: none; stroke: #8a9bb0; stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .title { font-weight: 700; font-size: 20px; }
+  .sub { font-size: 15px; fill: #46576e; }
+  .label { font-size: 14px; fill: #46576e; }
+  .mono { font-family: "Atkinson Hyperlegible Mono", monospace; font-size: 13px; fill: #46576e; }
+  .arrow { stroke: #14243a; stroke-width: 2; fill: none; marker-end: url(#head); }
+  .heading { font-weight: 700; font-size: 26px; }
+</style>
+</head>
+<body>
+<svg width="1240" height="640" viewBox="0 0 1240 640" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#14243a"/>
+    </marker>
+  </defs>
+
+  <text x="48" y="58" class="heading">How the portfolio runs on AWS</text>
+  <text x="48" y="88" class="sub">Static pages from Amplify Hosting, plus one serverless counter defined in CloudFormation</text>
+
+  <rect x="48" y="262" width="200" height="110" rx="12" class="box"/>
+  <text x="148" y="307" text-anchor="middle" class="title">Visitor's browser</text>
+  <text x="148" y="334" text-anchor="middle" class="sub">HTML, CSS, JS modules</text>
+
+  <rect x="400" y="124" width="380" height="140" rx="12" class="box" style="stroke:#1f55b8"/>
+  <text x="590" y="166" text-anchor="middle" class="title">AWS Amplify Hosting</text>
+  <text x="590" y="194" text-anchor="middle" class="sub">CloudFront CDN, HTTPS, custom headers</text>
+  <text x="590" y="222" text-anchor="middle" class="mono">main.d149c0bsd6u3f4.amplifyapp.com</text>
+  <text x="590" y="244" text-anchor="middle" class="mono">manual deploys of site/</text>
+
+  <rect x="380" y="320" width="820" height="270" rx="16" class="group"/>
+  <text x="400" y="350" class="label">AWS CloudFormation stack: portfolio-gene-counter (infra/counter.yaml)</text>
+
+  <rect x="400" y="380" width="250" height="180" rx="12" class="box" style="stroke:#a35a00"/>
+  <text x="525" y="420" text-anchor="middle" class="title">AWS Lambda</text>
+  <text x="525" y="448" text-anchor="middle" class="sub">Node.js 22 function URL</text>
+  <text x="525" y="480" text-anchor="middle" class="mono">POST adds a reader</text>
+  <text x="525" y="502" text-anchor="middle" class="mono">GET returns the count</text>
+  <text x="525" y="524" text-anchor="middle" class="mono">CORS: site origin only</text>
+
+  <rect x="700" y="380" width="230" height="180" rx="12" class="box" style="stroke:#13803a"/>
+  <text x="815" y="420" text-anchor="middle" class="title">Amazon DynamoDB</text>
+  <text x="815" y="448" text-anchor="middle" class="sub">On-demand table</text>
+  <text x="815" y="480" text-anchor="middle" class="mono">one item, updated</text>
+  <text x="815" y="502" text-anchor="middle" class="mono">with an atomic ADD</text>
+
+  <rect x="960" y="380" width="220" height="180" rx="12" class="box" style="stroke:#c21f35"/>
+  <text x="1070" y="420" text-anchor="middle" class="title">IAM and logs</text>
+  <text x="1070" y="452" text-anchor="middle" class="sub">Function role can only</text>
+  <text x="1070" y="476" text-anchor="middle" class="sub">read and update the</text>
+  <text x="1070" y="500" text-anchor="middle" class="sub">one table. CloudWatch</text>
+  <text x="1070" y="524" text-anchor="middle" class="sub">keeps logs 30 days.</text>
+
+  <path d="M248 296 C 320 296, 330 194, 396 194" class="arrow"/>
+  <text x="250" y="172" class="label">1. Loads the page</text>
+
+  <path d="M248 342 C 320 342, 330 470, 396 470" class="arrow"/>
+  <text x="250" y="438" class="label">2. Reads the</text>
+  <text x="250" y="456" class="label">message</text>
+
+  <path d="M650 470 L 696 470" class="arrow"/>
+</svg>
+</body>
+</html>

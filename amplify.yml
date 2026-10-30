@@ -1,0 +1,12 @@
+# Build settings for Amplify Hosting when the app is connected to this Git repo.
+# The site is plain HTML, CSS, and JavaScript, so the build only runs the tests.
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        - node --test tests/*.test.mjs
+  artifacts:
+    baseDirectory: site
+    files:
+      - "**/*"

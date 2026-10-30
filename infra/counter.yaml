@@ -1,0 +1,135 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Reader counter for the "Translate the gene" feature on Noel Sason's portfolio.
+  A Lambda function URL increments (POST) or reads (GET) one DynamoDB item.
+
+Parameters:
+  AllowedOrigin:
+    Type: String
+    Description: The portfolio's origin for CORS, for example https://main.d123abc.amplifyapp.com
+
+Resources:
+  CounterTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  CounterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: counter-table-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                Resource: !GetAtt CounterTable.Arn
+
+  CounterFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Counts visitors who translated the hidden gene.
+      Runtime: nodejs22.x
+      Handler: index.handler
+      Role: !GetAtt CounterRole.Arn
+      MemorySize: 128
+      Timeout: 5
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CounterTable
+      Code:
+        ZipFile: |
+          const { DynamoDBClient, GetItemCommand, UpdateItemCommand } = require("@aws-sdk/client-dynamodb");
+
+          const db = new DynamoDBClient({});
+          const Key = { id: { S: "gene-readers" } };
+
+          const reply = (statusCode, body) => ({
+            statusCode,
+            headers: { "content-type": "application/json", "cache-control": "no-store" },
+            body: JSON.stringify(body),
+          });
+
+          exports.handler = async (event) => {
+            const method = event.requestContext.http.method;
+
+            if (method === "POST") {
+              const { Attributes } = await db.send(new UpdateItemCommand({
+                TableName: process.env.TABLE_NAME,
+                Key,
+                UpdateExpression: "ADD readers :one",
+                ExpressionAttributeValues: { ":one": { N: "1" } },
+                ReturnValues: "UPDATED_NEW",
+              }));
+              return reply(200, { count: Number(Attributes.readers.N) });
+            }
+
+            if (method === "GET") {
+              const { Item } = await db.send(new GetItemCommand({ TableName: process.env.TABLE_NAME, Key }));
+              return reply(200, { count: Number(Item?.readers?.N ?? 0) });
+            }
+
+            return reply(405, { error: "Use GET or POST." });
+          };
+
+  CounterLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${CounterFunction}
+      RetentionInDays: 30
+
+  CounterUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt CounterFunction.Arn
+      AuthType: NONE
+      Cors:
+        AllowOrigins:
+          - !Ref AllowedOrigin
+          - http://localhost:4173
+        AllowMethods:
+          - GET
+          - POST
+        MaxAge: 86400
+
+  # A public function URL needs both permissions; the second is limited to calls through the URL.
+  PublicUrlInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CounterFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: "*"
+      FunctionUrlAuthType: NONE
+
+  PublicFunctionInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CounterFunction
+      Action: lambda:InvokeFunction
+      Principal: "*"
+      InvokedViaFunctionUrl: true
+
+Outputs:
+  CounterUrl:
+    Description: Paste this into COUNTER_URL in site/js/counter.js.
+    Value: !GetAtt CounterUrl.FunctionUrl
+  TableName:
+    Value: !Ref CounterTable
