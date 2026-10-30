@@ -24,6 +24,10 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+      # The assistant's daily rate-limit items carry an expiry, so they delete themselves.
+      TimeToLiveSpecification:
+        AttributeName: expires
+        Enabled: true
 
   CounterRole:
     Type: AWS::IAM::Role
@@ -114,7 +118,6 @@ Resources:
       Cors:
         AllowOrigins:
           - !Ref AllowedOrigin
-          - http://localhost:4173
         AllowMethods:
           - GET
           - POST

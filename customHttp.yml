@@ -8,4 +8,4 @@ customHeaders:
       - key: Referrer-Policy
         value: strict-origin-when-cross-origin
       - key: Content-Security-Policy
-        value: "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.lambda-url.us-east-1.on.aws; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
+        value: "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://q4prjx7x5sccbamh7impevwmk40owgcp.lambda-url.us-east-1.on.aws https://qahsaj7knvv5hzoqcr3oew3e5e0dlszg.lambda-url.us-east-1.on.aws; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"

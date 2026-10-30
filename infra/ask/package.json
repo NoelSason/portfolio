@@ -1,0 +1,10 @@
+{
+  "name": "portfolio-gene-ask",
+  "private": true,
+  "type": "module",
+  "description": "Lambda function that answers visitor questions about the gene translator.",
+  "main": "index.mjs",
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.3.0"
+  }
+}

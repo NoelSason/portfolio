@@ -18,7 +18,7 @@
 </style>
 </head>
 <body>
-<svg width="1240" height="640" viewBox="0 0 1240 640" xmlns="http://www.w3.org/2000/svg">
+<svg width="1240" height="880" viewBox="0 0 1240 880" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="#14243a"/>
@@ -26,49 +26,73 @@
   </defs>
 
   <text x="48" y="58" class="heading">How the portfolio runs on AWS</text>
-  <text x="48" y="88" class="sub">Static pages from Amplify Hosting, plus one serverless counter defined in CloudFormation</text>
+  <text x="48" y="88" class="sub">Static pages from Amplify Hosting, plus two small serverless stacks defined in CloudFormation</text>
 
-  <rect x="48" y="262" width="200" height="110" rx="12" class="box"/>
-  <text x="148" y="307" text-anchor="middle" class="title">Visitor's browser</text>
-  <text x="148" y="334" text-anchor="middle" class="sub">HTML, CSS, JS modules</text>
+  <rect x="48" y="300" width="200" height="110" rx="12" class="box"/>
+  <text x="148" y="345" text-anchor="middle" class="title">Visitor's browser</text>
+  <text x="148" y="372" text-anchor="middle" class="sub">HTML, CSS, JS modules</text>
 
-  <rect x="400" y="124" width="380" height="140" rx="12" class="box" style="stroke:#1f55b8"/>
-  <text x="590" y="166" text-anchor="middle" class="title">AWS Amplify Hosting</text>
-  <text x="590" y="194" text-anchor="middle" class="sub">CloudFront CDN, HTTPS, custom headers</text>
-  <text x="590" y="222" text-anchor="middle" class="mono">main.d149c0bsd6u3f4.amplifyapp.com</text>
-  <text x="590" y="244" text-anchor="middle" class="mono">manual deploys of site/</text>
+  <rect x="400" y="124" width="420" height="120" rx="12" class="box" style="stroke:#1f55b8"/>
+  <text x="610" y="164" text-anchor="middle" class="title">AWS Amplify Hosting</text>
+  <text x="610" y="192" text-anchor="middle" class="sub">CloudFront CDN, HTTPS, strict CSP headers</text>
+  <text x="610" y="220" text-anchor="middle" class="mono">main.d149c0bsd6u3f4.amplifyapp.com</text>
 
-  <rect x="380" y="320" width="820" height="270" rx="16" class="group"/>
-  <text x="400" y="350" class="label">AWS CloudFormation stack: portfolio-gene-counter (infra/counter.yaml)</text>
+  <!-- Counter stack -->
+  <rect x="380" y="282" width="820" height="230" rx="16" class="group"/>
+  <text x="400" y="310" class="label">Stack portfolio-gene-counter (infra/counter.yaml)</text>
+  <rect x="400" y="330" width="250" height="160" rx="12" class="box" style="stroke:#a35a00"/>
+  <text x="525" y="368" text-anchor="middle" class="title">Lambda: counter</text>
+  <text x="525" y="396" text-anchor="middle" class="sub">Function URL, Node.js 22</text>
+  <text x="525" y="426" text-anchor="middle" class="mono">POST adds a reader</text>
+  <text x="525" y="448" text-anchor="middle" class="mono">GET returns the count</text>
+  <text x="525" y="470" text-anchor="middle" class="mono">CORS: site origin only</text>
+  <rect x="700" y="330" width="230" height="160" rx="12" class="box" style="stroke:#13803a"/>
+  <text x="815" y="368" text-anchor="middle" class="title">DynamoDB</text>
+  <text x="815" y="396" text-anchor="middle" class="sub">1 read, 1 write unit</text>
+  <text x="815" y="426" text-anchor="middle" class="mono">reader count</text>
+  <text x="815" y="448" text-anchor="middle" class="mono">+ daily ask limits</text>
+  <text x="815" y="472" text-anchor="middle" class="label">TTL cleans old limits</text>
+  <rect x="960" y="330" width="220" height="160" rx="12" class="box" style="stroke:#c21f35"/>
+  <text x="1070" y="368" text-anchor="middle" class="title">IAM and logs</text>
+  <text x="1070" y="400" text-anchor="middle" class="sub">One role per function,</text>
+  <text x="1070" y="424" text-anchor="middle" class="sub">least privilege.</text>
+  <text x="1070" y="448" text-anchor="middle" class="sub">Errors only, kept</text>
+  <text x="1070" y="472" text-anchor="middle" class="sub">30 days.</text>
 
-  <rect x="400" y="380" width="250" height="180" rx="12" class="box" style="stroke:#a35a00"/>
-  <text x="525" y="420" text-anchor="middle" class="title">AWS Lambda</text>
-  <text x="525" y="448" text-anchor="middle" class="sub">Node.js 22 function URL</text>
-  <text x="525" y="480" text-anchor="middle" class="mono">POST adds a reader</text>
-  <text x="525" y="502" text-anchor="middle" class="mono">GET returns the count</text>
-  <text x="525" y="524" text-anchor="middle" class="mono">CORS: site origin only</text>
+  <!-- Ask stack -->
+  <rect x="380" y="548" width="820" height="276" rx="16" class="group"/>
+  <text x="1180" y="576" text-anchor="end" class="label">Stack portfolio-gene-ask (infra/ask.yaml, code from a private S3 bucket)</text>
+  <rect x="400" y="596" width="250" height="160" rx="12" class="box" style="stroke:#a35a00"/>
+  <text x="525" y="634" text-anchor="middle" class="title">Lambda: ask</text>
+  <text x="525" y="662" text-anchor="middle" class="sub">Function URL, Anthropic SDK</text>
+  <text x="525" y="692" text-anchor="middle" class="mono">10 questions a day,</text>
+  <text x="525" y="714" text-anchor="middle" class="mono">3 per visitor</text>
+  <text x="525" y="736" text-anchor="middle" class="mono">checked before any call</text>
+  <rect x="700" y="596" width="230" height="160" rx="12" class="box" style="stroke:#1f55b8"/>
+  <text x="815" y="634" text-anchor="middle" class="title">Parameter Store</text>
+  <text x="815" y="662" text-anchor="middle" class="sub">SecureString, KMS</text>
+  <text x="815" y="692" text-anchor="middle" class="mono">API key, read once</text>
+  <text x="815" y="714" text-anchor="middle" class="mono">per cold start</text>
+  <rect x="960" y="596" width="220" height="160" rx="12" class="box" style="stroke-dasharray:6 4"/>
+  <text x="1070" y="634" text-anchor="middle" class="title">Claude API</text>
+  <text x="1070" y="662" text-anchor="middle" class="sub">Claude Opus 5.5,</text>
+  <text x="1070" y="686" text-anchor="middle" class="sub">low effort, with the</text>
+  <text x="1070" y="710" text-anchor="middle" class="sub">visitor's gene as context</text>
+  <text x="1070" y="740" text-anchor="middle" class="label">Anthropic, outside AWS</text>
 
-  <rect x="700" y="380" width="230" height="180" rx="12" class="box" style="stroke:#13803a"/>
-  <text x="815" y="420" text-anchor="middle" class="title">Amazon DynamoDB</text>
-  <text x="815" y="448" text-anchor="middle" class="sub">1 read and 1 write unit</text>
-  <text x="815" y="480" text-anchor="middle" class="mono">one item, updated</text>
-  <text x="815" y="502" text-anchor="middle" class="mono">with an atomic ADD</text><text x="815" y="530" text-anchor="middle" class="label">always-free tier</text>
-
-  <rect x="960" y="380" width="220" height="180" rx="12" class="box" style="stroke:#c21f35"/>
-  <text x="1070" y="420" text-anchor="middle" class="title">IAM and logs</text>
-  <text x="1070" y="452" text-anchor="middle" class="sub">Function role can only</text>
-  <text x="1070" y="476" text-anchor="middle" class="sub">read and update the</text>
-  <text x="1070" y="500" text-anchor="middle" class="sub">one table. CloudWatch</text>
-  <text x="1070" y="524" text-anchor="middle" class="sub">keeps logs 30 days.</text>
-
-  <path d="M248 296 C 320 296, 330 194, 396 194" class="arrow"/>
-  <text x="250" y="172" class="label">1. Loads the page</text>
-
-  <path d="M248 342 C 320 342, 330 470, 396 470" class="arrow"/>
-  <text x="250" y="438" class="label">2. Reads the</text>
-  <text x="250" y="456" class="label">message</text>
-
-  <path d="M650 470 L 696 470" class="arrow"/>
+  <path d="M248 330 C 320 330, 330 184, 396 184" class="arrow"/>
+  <text x="236" y="160" class="label">1. Loads the page</text>
+  <path d="M248 380 C 320 380, 330 410, 396 410" class="arrow"/>
+  <text x="262" y="430" class="label">2. Reads it</text>
+  <path d="M200 410 C 200 600, 300 676, 396 676" class="arrow"/>
+  <text x="188" y="560" text-anchor="end" class="label">3. Asks a question</text>
+  <path d="M650 410 L 696 410" class="arrow"/>
+  <path d="M650 676 L 696 676" class="arrow"/>
+  <text x="652" y="666" class="label">key</text>
+  <path d="M600 596 C 630 560, 740 530, 780 494" class="arrow" style="stroke-dasharray:5 4"/>
+  <text x="560" y="540" class="label">checks limits</text>
+  <path d="M525 756 C 525 806, 1070 806, 1070 760" class="arrow"/>
+  <text x="760" y="778" class="label">asks Claude</text>
 </svg>
 </body>
 </html>

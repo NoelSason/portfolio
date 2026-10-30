@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  "Ask about this gene" assistant for Noel Sason's portfolio. A Lambda function URL answers
+  visitor questions with Claude, under a daily limit kept in the counter stack's DynamoDB table.
+  The function code is infra/ask/ zipped with its node_modules and uploaded to S3 (see README).
+
+Parameters:
+  CodeBucket:
+    Type: String
+    Description: S3 bucket that holds the zipped function code.
+  CodeKey:
+    Type: String
+    Description: S3 key of the zip. Use a new key per upload so CloudFormation sees the change.
+  AllowedOrigin:
+    Type: String
+    Description: The portfolio's origin for CORS.
+  CounterTableName:
+    Type: String
+    Description: The DynamoDB table from the portfolio-gene-counter stack (its TableName output).
+  AnthropicKeyParameter:
+    Type: String
+    Default: /portfolio/anthropic-api-key
+    Description: SSM Parameter Store SecureString that holds the Anthropic API key.
+  DailyLimit:
+    Type: Number
+    Default: 10
+    Description: Questions per day across all visitors.
+  PerVisitorLimit:
+    Type: Number
+    Default: 3
+    Description: Questions per day per visitor (by hashed IP).
+
+Resources:
+  AskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: ask-least-privilege
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: dynamodb:UpdateItem
+                Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CounterTableName}
+              - Effect: Allow
+                Action: ssm:GetParameter
+                Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${AnthropicKeyParameter}
+              - Effect: Allow
+                Action: kms:Decrypt
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    kms:ViaService: !Sub ssm.${AWS::Region}.amazonaws.com
+
+  AskFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Answers visitor questions about the gene translator, with a daily limit.
+      Runtime: nodejs22.x
+      Handler: index.handler
+      Role: !GetAtt AskRole.Arn
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref CodeKey
+      MemorySize: 256
+      Timeout: 30
+      LoggingConfig:
+        LogFormat: JSON
+        ApplicationLogLevel: ERROR
+        SystemLogLevel: WARN
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CounterTableName
+          ANTHROPIC_KEY_PARAM: !Ref AnthropicKeyParameter
+          ASK_DAILY_LIMIT: !Ref DailyLimit
+          ASK_PER_VISITOR_LIMIT: !Ref PerVisitorLimit
+
+  AskLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AskFunction}
+      RetentionInDays: 30
+
+  AskUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt AskFunction.Arn
+      AuthType: NONE
+      Cors:
+        AllowOrigins:
+          - !Ref AllowedOrigin
+        AllowMethods:
+          - POST
+        AllowHeaders:
+          - content-type
+        MaxAge: 86400
+
+  # A public function URL needs both permissions; the second is limited to calls through the URL.
+  PublicUrlInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AskFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: "*"
+      FunctionUrlAuthType: NONE
+
+  PublicFunctionInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AskFunction
+      Action: lambda:InvokeFunction
+      Principal: "*"
+      InvokedViaFunctionUrl: true
+
+Outputs:
+  AskUrl:
+    Description: Paste this into ASK_URL in site/js/assistant.js.
+    Value: !GetAtt AskUrl.FunctionUrl

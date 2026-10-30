@@ -87,6 +87,11 @@ body {
   overflow-x: hidden;
 }
 
+/* Class display rules (like .button's inline-flex) must not override the hidden attribute. */
+[hidden] {
+  display: none !important;
+}
+
 h1,
 h2,
 h3 {
@@ -153,6 +158,10 @@ a:hover {
 .fill-c { fill: var(--base-c); }
 .fill-g { fill: var(--base-g); }
 .fill-t { fill: var(--base-t); }
+.stroke-a { stroke: var(--base-a); }
+.stroke-c { stroke: var(--base-c); }
+.stroke-g { stroke: var(--base-g); }
+.stroke-t { stroke: var(--base-t); }
 .base-A { color: var(--base-a); }
 .base-C { color: var(--base-c); }
 .base-G { color: var(--base-g); }
@@ -304,15 +313,18 @@ a:hover {
 .bases-glyph {
   width: 16px;
   height: 16px;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
 }
 
 /* Hero */
 .hero {
-  padding: clamp(48px, 9vw, 112px) 0 clamp(40px, 6vw, 72px);
+  padding: clamp(32px, 5vw, 64px) 0 clamp(40px, 6vw, 72px);
 }
 
 .hero h1 {
-  font-size: clamp(3.25rem, 11vw, 7.5rem);
+  font-size: clamp(3rem, 8vw, 5.5rem);
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 0.95;
@@ -325,20 +337,12 @@ a:hover {
 }
 
 .hero-lede {
-  max-width: 26ch;
-  margin-top: 28px;
+  max-width: 30ch;
+  margin-top: 20px;
   font-size: clamp(1.5rem, 3.4vw, 2.25rem);
   font-weight: 500;
   line-height: 1.25;
   letter-spacing: -0.01em;
-}
-
-.hero-sub {
-  max-width: 58ch;
-  margin-top: 16px;
-  font-size: var(--step-1);
-  line-height: 1.55;
-  color: var(--ink-soft);
 }
 
 .hero-actions {
@@ -346,7 +350,7 @@ a:hover {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 24px;
-  margin-top: 28px;
+  margin-top: 24px;
 }
 
 .text-link {
@@ -358,7 +362,6 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
   color: var(--ink-soft);
   font-size: var(--step--1);
 }
@@ -372,11 +375,10 @@ a:hover {
 }
 
 .trace-figure {
-  margin: clamp(40px, 6vw, 64px) 0 0;
+  margin: clamp(28px, 4vw, 44px) 0 0;
 }
 
-.trace-scroll {
-  overflow-x: auto;
+.trace-box {
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface);
@@ -385,8 +387,7 @@ a:hover {
 .trace-button {
   display: block;
   width: 100%;
-  min-width: 600px;
-  padding: 16px 12px 8px;
+  padding: 16px 12px 6px;
   border: 0;
   background: none;
   color: inherit;
@@ -437,13 +438,47 @@ a:hover {
   stroke-width: 1.8;
 }
 
+/* One slot per codon under the trace. Empty until a visitor reads the gene. */
+.trace .lane-slot {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.6;
+}
+
+.trace .lane-slot.filled {
+  fill: var(--ink);
+  stroke: none;
+  opacity: 1;
+}
+
+.trace .lane-slot.special {
+  fill: var(--base-a);
+}
+
+.trace .lane-aa {
+  fill: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.trace .lane-aa.is-stop {
+  fill: var(--base-t);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+}
+
 .trace-caption {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px 24px;
-  margin-top: 16px;
+  gap: 12px 24px;
+  margin-bottom: 14px;
 }
 
 .trace-caption p {
@@ -490,7 +525,7 @@ a:hover {
 /* About */
 .facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px 32px;
   max-width: var(--measure);
   margin: 32px 0 0;
@@ -536,7 +571,6 @@ a:hover {
 }
 
 .how-i-build {
-  max-width: var(--measure);
   margin-top: 40px;
   padding: 20px 24px;
   border-radius: var(--radius);
@@ -574,6 +608,35 @@ a:hover {
   flex-direction: column;
   gap: 4px;
   font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.project-stat {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.stat-number {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--step-2);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.status-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--step--1);
+}
+
+.status-legend .status {
+  font-weight: 500;
   color: var(--ink-soft);
 }
 
@@ -726,7 +789,7 @@ a:hover {
 
 /* Translator dialog */
 .gene-dialog {
-  width: min(940px, calc(100vw - 32px));
+  width: min(1180px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
   padding: 0;
   border: 1px solid var(--line);
@@ -734,6 +797,10 @@ a:hover {
   background: var(--surface);
   color: var(--ink);
   overscroll-behavior: contain;
+}
+
+html:has(.gene-dialog[open]) {
+  overflow: hidden;
 }
 
 .gene-dialog::backdrop {
@@ -842,9 +909,60 @@ a:hover {
 }
 
 .gene-strip {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+/* The ribosome: a large subunit above the RNA and a small one below, sliding codon by codon. */
+.ribosome {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 220ms ease-in-out, opacity 200ms ease-out;
+}
+
+.ribosome::before,
+.ribosome::after {
+  content: "";
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  border: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+/* The RNA runs through the gap between the subunits, as it does in a real ribosome. */
+.ribosome::before {
+  bottom: calc(100% + 1px);
+  height: 14px;
+  border-radius: 999px 999px 4px 4px;
+}
+
+.ribosome::after {
+  top: calc(100% + 1px);
+  height: 9px;
+  left: 3px;
+  right: 3px;
+  border-radius: 3px 3px 999px 999px;
+}
+
+.ribosome.active {
+  opacity: 1;
+}
+
+.ribosome.released {
+  opacity: 0;
+  translate: 0 10px;
+  transition: opacity 400ms ease-out, translate 400ms ease-out;
+}
+
+.codon.unread {
+  opacity: 0.35;
 }
 
 .codon {
@@ -855,24 +973,6 @@ a:hover {
   padding: 6px 4px 8px;
   border-radius: 8px;
   font-family: var(--font-mono);
-}
-
-.codon::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: 14px 14px 22px 22px;
-  background: var(--ribosome);
-  border: 2px solid var(--ink);
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 120ms, transform 120ms;
-}
-
-.codon.reading::before {
-  opacity: 1;
-  transform: none;
 }
 
 .codon > * {
@@ -903,11 +1003,13 @@ a:hover {
 }
 
 .base.changed {
-  background: color-mix(in srgb, currentColor 16%, transparent);
+  box-shadow: inset 0 -3px 0 currentColor;
 }
 
 .codon-rna {
+  padding: 0 2px;
   font-size: var(--step--1);
+  font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--ink-soft);
 }
@@ -953,6 +1055,10 @@ a:hover {
   gap: 10px;
 }
 
+.payoff-button {
+  align-self: flex-start;
+}
+
 .protein-line {
   display: flex;
   flex-wrap: wrap;
@@ -991,17 +1097,181 @@ a:hover {
   margin-top: 10px;
 }
 
-.reveal-message {
+.reveal-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-bottom: 14px;
+}
+
+.reveal-word {
+  display: flex;
+  gap: 5px;
+}
+
+.reveal-tile {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  width: 2.6rem;
+  height: 3.1rem;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--surface);
   font-family: var(--font-mono);
-  font-size: clamp(1.5rem, 5vw, 2.25rem);
+  animation: tile-in 260ms ease-out both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+.reveal-tile.special {
+  background: var(--base-a);
+}
+
+.reveal-tile.changed {
+  outline: 3px solid var(--base-t);
+  outline-offset: 2px;
+}
+
+.reveal-tile.missing {
+  background: none;
+  border: 2px dashed var(--ink-soft);
+}
+
+.tile-letter {
+  font-size: 1.375rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
-  line-height: 1.2;
+  line-height: 1;
+}
+
+.tile-code {
+  font-size: 0.6875rem;
+  opacity: 0.8;
+}
+
+@keyframes tile-in {
+  from { transform: translateY(6px) scale(0.8); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.reveal-note {
+  font-weight: 700;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .reveal-count {
   color: var(--ink-soft);
   font-size: var(--step--1);
+}
+
+.assistant {
+  display: grid;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.assistant-intro,
+.assistant-note {
+  max-width: var(--measure);
+  color: var(--ink-soft);
+}
+
+.assistant-note {
+  font-size: var(--step--1);
+}
+
+.assistant-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--step--1);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.assistant-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.assistant-form .text-input {
+  flex: 1 1 260px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1.5px solid var(--ink-soft);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+.assistant-form .text-input:focus-visible {
+  border-color: var(--accent);
+  outline-offset: 1px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.assistant-answer {
+  max-width: var(--measure);
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.assistant-text {
+  white-space: pre-line;
+}
+
+.assistant-source {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+}
+
+.assistant-source:empty {
+  display: none;
+}
+
+.assistant-thinking::after {
+  content: "…";
+  display: inline-block;
+  animation: thinking 1s steps(4, end) infinite;
+  width: 1.2em;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+@keyframes thinking {
+  from { width: 0; }
+  to { width: 1.2em; }
 }
 
 .name-tool {
@@ -1020,7 +1290,7 @@ a:hover {
   width: min(320px, 100%);
   min-height: 44px;
   padding: 0 12px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--ink-soft);
   border-radius: 8px;
   background: var(--paper);
   color: var(--ink);
@@ -1038,6 +1308,19 @@ a:hover {
 .name-output {
   display: grid;
   gap: 10px;
+}
+
+.name-share-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.name-share-status {
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+  overflow-wrap: anywhere;
 }
 
 .name-codons {
@@ -1160,6 +1443,61 @@ a:hover {
 
   .base {
     font-size: 1rem;
+  }
+}
+
+/* Wide screens: all 14 codons on one row, so the ribosome reads straight across. */
+@media (min-width: 1000px) {
+  .gene-strip {
+    gap: 4px;
+  }
+
+  .base {
+    width: 1.3em;
+    font-size: 1rem;
+  }
+}
+
+/* Phones: keep Translate and Reset in reach while the gene wraps. */
+@media (max-width: 720px) {
+  .gene-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin: 0 calc(-1 * clamp(20px, 4vw, 32px));
+    padding: 12px clamp(20px, 4vw, 32px);
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .trace .call {
+    font-size: 12px;
+  }
+
+  .reveal-tile {
+    width: 2.2rem;
+    height: 2.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-nav a {
+    padding: 4px 7px;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .wordmark {
+    font-size: 1rem;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .gene-button {
+    padding: 0 10px;
   }
 }
 

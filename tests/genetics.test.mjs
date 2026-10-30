@@ -8,6 +8,7 @@ import {
   codons,
   encodeName,
   mutate,
+  mutationEffect,
   transcribe,
   translate,
   translateCodon,
@@ -83,4 +84,24 @@ test("names encode to codons with a verdict", () => {
 test("every encoded standard letter translates back to itself", () => {
   const result = encodeName("ACDEFGHIKLMNPQRSTVWY");
   for (const { letter, codon } of result.letters) assert.equal(CODON_TABLE[codon], letter);
+});
+
+test("mutation effects account for where the ribosome starts and stops", () => {
+  // Base 19 starts codon 7, after E. coli's stop at codon 6, so it's never read.
+  assert.equal(mutationEffect(GENE, mutate(GENE, 18, "T"), 18, "ecoli").kind, "unread");
+  // The same codon is read in M. barkeri, so the change matters there.
+  assert.equal(mutationEffect(GENE, mutate(GENE, 18, "T"), 18, "mbarkeri").kind, "missense");
+  // Once the start codon is gone, later changes make no protein either way.
+  const noStart = mutate(GENE, 0, "C");
+  assert.equal(mutationEffect(GENE, noStart, 0, "ecoli").kind, "start-lost");
+  assert.equal(mutationEffect(noStart, mutate(noStart, 0, "G"), 0, "ecoli").kind, "no-start");
+  assert.equal(mutationEffect(noStart, mutate(noStart, 0, "A"), 0, "ecoli").kind, "start-restored");
+  assert.equal(mutationEffect(noStart, mutate(noStart, 9, "G"), 9, "ecoli").kind, "no-start");
+});
+
+test("accented names keep their letters", () => {
+  assert.deepEqual(encodeName("José").letters.map((l) => l.letter), ["J", "O", "S", "E"]);
+  assert.equal(encodeName("Zoë").letters.length, 3);
+  assert.equal(encodeName("Ünal").verdict, "human-with-signal");
+  assert.equal(encodeName("李华").letters.length, 0);
 });

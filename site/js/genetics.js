@@ -125,6 +125,18 @@ export function classifyMutation(before, after, position, organismId) {
   return { kind, codonIndex: index, fromCodon, toCodon, fromAa, toAa };
 }
 
+// What a substitution does to the protein, given where the ribosome starts and stops.
+// Adds two kinds to classifyMutation's: "unread" (the codon is after the stop) and
+// "no-start" (there was no start codon before the change, so nothing was made either way).
+export function mutationEffect(before, after, position, organismId) {
+  const codon = classifyMutation(before, after, position, organismId);
+  if (codon.kind === "start-lost" || codon.kind === "start-restored") return codon;
+  const was = translate(before, organismId);
+  if (was.end === "no-start") return { ...codon, kind: "no-start" };
+  if (was.stopIndex !== null && codon.codonIndex > was.stopIndex) return { ...codon, kind: "unread" };
+  return codon;
+}
+
 // One codon per letter for writing a name in protein. Most are the codon human genes use most often.
 const NAME_CODONS = {
   A: "GCC", C: "TGC", D: "GAC", E: "GAG", F: "TTC", G: "GGC", H: "CAC", I: "ATC",
@@ -146,8 +158,13 @@ export const SPECIAL_LETTERS = Object.freeze({
 
 // Encodes a name as a gene: start codon, one codon per letter, stop codon.
 // verdict is "any-cell", "human-with-signal" (has U), "microbes-only" (has O), or "no-cell" (has B, J, X, or Z).
+export function nameLetters(name) {
+  // "José" -> "JOSE", "Ünal" -> "UNAL": strip accents before keeping A to Z.
+  return [...name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()].filter((ch) => ch >= "A" && ch <= "Z");
+}
+
 export function encodeName(name) {
-  const letters = [...name.toUpperCase()].filter((ch) => ch >= "A" && ch <= "Z");
+  const letters = nameLetters(name);
   const encoded = letters.map((ch) => ({
     letter: ch,
     codon: NAME_CODONS[ch] ?? null,
