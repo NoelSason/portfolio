@@ -73,7 +73,7 @@
 
         <figure class="trace-figure">
           <figcaption class="trace-caption">
-            <p>This trace is a 42-base gene I wrote. Its protein spells a message, and <i>E. coli</i> can't finish reading it. The empty slots under the trace fill in once you read it.</p>
+            <p id="trace-caption-text">This trace is a 42-base gene I wrote. Its protein spells a message, and <i>E. coli</i> can't finish reading it. The empty slots under the trace fill in once you read it.</p>
             <button class="button button-primary" type="button" data-open-gene>Translate the gene</button>
           </figcaption>
           <div class="trace-box">
@@ -400,11 +400,11 @@
       <div class="gene-actions">
         <button class="button button-primary" type="button" id="translate-button">Translate</button>
         <button class="button" type="button" id="reset-button">Reset the gene</button>
+        <button class="button button-primary payoff-button" type="button" id="payoff-button" hidden>Read it with <i>M. barkeri</i></button>
       </div>
 
       <p class="protein-line"><span class="protein-label">Protein</span> <output id="protein-output" class="protein-output" aria-live="off"></output></p>
       <p class="gene-status" id="gene-status" role="status">Press Translate to read the gene with E. coli.</p>
-      <button class="button button-primary payoff-button" type="button" id="payoff-button" hidden>Read it with <i>M. barkeri</i></button>
 
       <div class="gene-reveal" id="gene-reveal" hidden>
         <div class="reveal-tiles" id="reveal-tiles" aria-hidden="true"></div>
@@ -428,8 +428,8 @@
           <input class="text-input" id="assistant-input" type="text" maxlength="280" autocomplete="off" placeholder="Why did my change stop the protein?">
           <button class="button button-primary" type="submit">Ask</button>
         </form>
-        <div class="assistant-answer" id="assistant-answer" aria-live="polite" hidden></div>
-        <p class="assistant-note"><span id="assistant-remaining">Ten questions a day, shared by every visitor.</span> Questions about anything other than this page are declined.</p>
+        <div class="assistant-answer" id="assistant-answer" aria-live="polite"></div>
+        <p class="assistant-note"><span id="assistant-remaining">Ten questions a day for everyone, and three per visitor.</span> It only answers questions about this page.</p>
       </section>
 
       <div class="name-tool">

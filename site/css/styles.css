@@ -961,7 +961,9 @@ html:has(.gene-dialog[open]) {
   transition: opacity 400ms ease-out, translate 400ms ease-out;
 }
 
-.codon.unread {
+/* Unread codons fade their RNA and protein rows; the DNA stays legible because it's still editable. */
+.codon.unread .codon-rna,
+.codon.unread .codon-aa {
   opacity: 0.35;
 }
 
@@ -1238,6 +1240,12 @@ html:has(.gene-dialog[open]) {
   cursor: progress;
 }
 
+.assistant-answer:empty {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
 .assistant-answer {
   max-width: var(--measure);
   padding: 14px 16px;
@@ -1447,7 +1455,7 @@ html:has(.gene-dialog[open]) {
 }
 
 /* Wide screens: all 14 codons on one row, so the ribosome reads straight across. */
-@media (min-width: 1000px) {
+@media (min-width: 1140px) {
   .gene-strip {
     gap: 4px;
   }

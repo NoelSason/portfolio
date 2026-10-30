@@ -140,6 +140,13 @@ function setUpTrace() {
     // Storage blocked: the slots start empty.
   }
 
+  // Once read, the caption describes the filled slots instead of promising them.
+  const caption = document.getElementById("trace-caption-text");
+  const updateCaption = () => {
+    if (read) caption.textContent = "This trace is a 42-base gene I wrote. You've read it, so the slots under it now show the protein it codes for.";
+  };
+  updateCaption();
+
   const render = (animate) => {
     drawTrace(svg, GENE, narrow.matches ? 21 : GENE.length);
     if (read) fillLane(svg, GENE_MESSAGE);
@@ -151,6 +158,7 @@ function setUpTrace() {
   document.addEventListener("gene:read", () => {
     read = true;
     fillLane(svg, GENE_MESSAGE);
+    updateCaption();
   });
 }
 
@@ -186,7 +194,10 @@ function setUpDialog() {
     if (!pendingHash) return;
     const hash = pendingHash;
     pendingHash = null;
-    location.hash = hash;
+    // After history.back(), wait a tick so Back's scroll restoration doesn't undo the jump.
+    setTimeout(() => {
+      location.hash = hash;
+    }, 50);
   };
 
   // Buttons add a history entry, so Back closes the dialog instead of leaving the page.
@@ -230,6 +241,8 @@ function setUpDialog() {
   // Back and Forward move between the page and the dialog's entry.
   window.addEventListener("popstate", () => {
     if (isGeneHash(location.hash)) {
+      // Forward onto the dialog's entry: the page entry is behind it, so closing goes Back.
+      pushed = true;
       if (!dialog.open) show();
       return;
     }
@@ -242,7 +255,11 @@ function setUpDialog() {
 
   // A typed or linked #gene or #name= opens it too.
   window.addEventListener("hashchange", () => {
-    if (isGeneHash(location.hash) && !dialog.open) show();
+    if (isGeneHash(location.hash) && !dialog.open) {
+      // A link to #gene added its own history entry, so closing goes Back to the page.
+      pushed = true;
+      show();
+    }
   });
 
   if (isGeneHash(location.hash)) show();

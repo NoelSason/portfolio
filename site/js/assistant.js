@@ -26,7 +26,6 @@ export function initAssistant(root, getState) {
     label.className = "assistant-source";
     label.textContent = source;
     answer.append(body, label);
-    answer.hidden = false;
   }
 
   function showThinking() {
@@ -35,7 +34,6 @@ export function initAssistant(root, getState) {
     dots.className = "assistant-thinking";
     dots.textContent = "Reading your gene";
     answer.append(dots);
-    answer.hidden = false;
   }
 
   for (const chip of root.querySelectorAll("[data-common]")) {
@@ -58,7 +56,7 @@ export function initAssistant(root, getState) {
       const response = await fetch(ASK_URL, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question, ...getState() }),
+        body: JSON.stringify({ question, dna: getState().dna, organism: getState().organism }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {

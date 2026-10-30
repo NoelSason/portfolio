@@ -91,14 +91,28 @@ function nameVerdict(result) {
 }
 
 // Splits a protein into the reveal's word groups: "MEETNSEL" -> ["MEET", "NSEL", ""].
+// The last group keeps any extra letters, as when a stop codon is lost.
 function groupLikeMessage(protein) {
   const groups = [];
   let start = 0;
-  for (const length of MESSAGE_WORDS) {
-    groups.push(protein.slice(start, start + length));
+  MESSAGE_WORDS.forEach((length, i) => {
+    const last = i === MESSAGE_WORDS.length - 1;
+    groups.push(last ? protein.slice(start) : protein.slice(start, start + length));
     start += length;
-  }
+  });
   return groups;
+}
+
+// "Letter 5 changed from N to T." / "The last 8 letters are missing." / "1 extra letter, K, was added."
+function describeChanges(protein) {
+  const notes = [];
+  for (let i = 0; i < Math.min(protein.length, GENE_MESSAGE.length); i++) {
+    if (protein[i] !== GENE_MESSAGE[i]) notes.push(`Letter ${i + 1} changed from ${GENE_MESSAGE[i]} to ${protein[i]}.`);
+  }
+  const missing = GENE_MESSAGE.length - protein.length;
+  if (missing > 0) notes.push(`The last ${missing} letter${missing === 1 ? " is" : "s are"} missing.`);
+  if (missing < 0) notes.push(`${-missing} extra letter${missing === -1 ? "" : "s"}, ${protein.slice(GENE_MESSAGE.length)}, ${missing === -1 ? "was" : "were"} added.`);
+  return notes.slice(0, 4).join(" ");
 }
 
 export function initTranslator(root) {
@@ -261,13 +275,16 @@ export function initTranslator(root) {
     });
 
     const spaced = groupLikeMessage(protein).filter(Boolean).join(" ");
-    revealText.textContent = protein === GENE_MESSAGE ? "Meet Noel Sason." : `The protein now reads ${spaced || "nothing"}.`;
+    revealText.textContent = protein === GENE_MESSAGE
+      ? "Meet Noel Sason."
+      : `The protein now reads ${spaced || "nothing"}. ${describeChanges(protein)}`;
 
     const changedBases = [...dna].filter((base, i) => base !== GENE[i]).length;
     if (protein === GENE_MESSAGE) {
       revealNote.hidden = true;
-    } else if (changedBases === 0) {
-      revealNote.textContent = `In E. coli the protein stops at ${spaced}. Switch back to M. barkeri to read the rest.`;
+    } else if (organism === "ecoli" && result?.end !== "no-start") {
+      // E. coli stops at the first UAG whatever else changed, so don't blame the edits.
+      revealNote.textContent = `In E. coli the protein stops at ${protein}. Switch back to M. barkeri to read the rest.`;
       revealNote.hidden = false;
     } else if (!protein) {
       revealNote.textContent = "Without a start codon, my name doesn't get made at all.";
@@ -466,7 +483,7 @@ export function initTranslator(root) {
 
     const verdict = document.createElement("p");
     verdict.className = "name-verdict";
-    verdict.textContent = `${nameVerdict(encoded)} Every protein starts with M, so your name gets one in front.`;
+    verdict.textContent = `${nameVerdict(encoded)} Translation starts at AUG, which codes for M, so your name gets one in front.`;
     nameOutput.append(list, verdict);
     announceName(nameVerdict(encoded));
   }

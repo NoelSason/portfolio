@@ -20,6 +20,10 @@ Every skill links to the projects that used it, and every project has a status: 
 
 ![The home page](screenshots/home-light.png)
 
+![Skills, each linked to the work that used it](screenshots/skills.jpg)
+
+![Projects, each with a status and one number](screenshots/projects.jpg)
+
 ## The creative feature: Translate the gene
 
 The first thing under my name is a DNA sequencing trace, the chart a Sanger sequencing run produces, with one colored peak per base. It shows a 42-base gene I wrote. Under the trace is one empty slot per codon, and the caption says the protein spells a message that E. coli can't finish reading.
@@ -44,7 +48,9 @@ The dialog also has an assistant you can ask about what's on screen. It sees wha
 
 The translator lives in a dialog, so the rest of the site stays a normal page with normal navigation. It works with a keyboard, with one tab stop for the whole sequence and arrow keys between bases, and it skips the animation for visitors who turn on reduced motion. On phones the trace splits into two rows, and the Translate and Reset buttons stay pinned to the bottom of the dialog. The site also has a dark theme that follows the system setting until the visitor picks one.
 
-![The site on a phone](screenshots/mobile.png)
+![The home page in dark mode](screenshots/home-dark.png)
+
+![The site and the translator on a phone](screenshots/mobile.png)
 
 ## AWS services I used
 
@@ -74,7 +80,7 @@ I deploy with a script, scripts/deploy.sh. It runs the tests, zips the site fold
 
 My AWS account is on the Free plan, which runs on credits and never charges my card unless I upgrade the plan. I also kept the backend inside the always-free limits so normal traffic doesn't use the credits.
 
-The table started as on-demand, which bills every request. I switched it to provisioned at 1 read and 1 write unit, which is inside DynamoDB's always-free tier. The counter is the only public endpoint, and anyone can inflate it, so I made it fail quietly. After a short burst, DynamoDB throttles writes to about one per second, and the page hides the count line instead of showing an error. I also added a zero-spend budget and turned on Free Tier alerts, so I get an email if anything starts to cost money. The assistant's model calls are billed by Anthropic, not AWS, and the daily limit keeps that to a few cents a day.
+The table started as on-demand, which bills every request. I switched it to provisioned at 1 read and 1 write unit, which is inside DynamoDB's always-free tier. Both function URLs are public, and anyone can inflate the counter, so I made spam fail quietly. After a short burst, DynamoDB throttles writes to about one per second, and the page hides the count line instead of showing an error. I also added a zero-spend budget and turned on Free Tier alerts, so I get an email if anything starts to cost money. The assistant's model calls are billed by Anthropic, not AWS, and the daily limit keeps that to a few cents a day.
 
 ![The zero-spend budget](screenshots/aws/budget-zero-spend-guard.png)
 
@@ -87,7 +93,8 @@ Before submitting, I had separate review agents judge the site against the rubri
 ## Challenges
 
 - A public Lambda function URL needs two resource-based permissions, lambda:InvokeFunctionUrl and lambda:InvokeFunction, and the second one should be limited to calls that come through the URL. I found that in the CloudFormation reference before deploying, so the stack came up on the first try.
-- Testing the phone layout was harder than building it. Headless Chrome won't make a window narrower than about 500 pixels, and my own Content Security Policy blocks the page from being framed, which was my workaround. I ended up testing phone widths against a local copy, so I didn't have to weaken the header.
+- Visitor text had to stay data, not instructions. The browser sends only the question, the DNA, and the organism. The function rebuilds the protein and the list of edits itself instead of trusting what the page says, strips angle brackets so a question can't close its own tag, and the system prompt tells the model to ignore instructions inside the question.
+- The daily limit had to hold even if many people asked at once. Each question first adds one to a per-visitor counter and a daily counter with a conditional DynamoDB update, which fails once the limit is reached, so two requests can't both take the last question. If the model never answers, the question is given back. If it answered but the answer was unusable, the question still counts, because it was billed.
 - The assistant needed my Anthropic API key, and I didn't want it anywhere a visitor or the repo could see it. It went straight from my local config into Parameter Store as a SecureString, the function's role can read only that one parameter, and the browser only ever talks to the function URL.
 - Testing the assistant without spending its daily budget took some care. My automated browser tests map the function URLs to localhost, so they exercise the interface and the error states without calling the model, and I asked only a couple of real questions by hand and then cleared those uses.
 - The biology had to be right, because the whole joke depends on it. E. coli treats UAG as a stop codon, Methanosarcina reads it as pyrrolysine, and selenocysteine needs an extra signal in the RNA. I wrote tests for the genetic code so a typo in a 64-entry table can't quietly break the message.

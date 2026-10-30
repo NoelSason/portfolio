@@ -15,6 +15,27 @@ const MODEL = "claude-opus-5-5";
 
 const GENE = "ATGGAGGAAACCAACTAGGAGCTGTCCGCCAGCTAGAATTAA";
 
+// The standard genetic code (NCBI table 1), so the server works out the protein itself
+// instead of trusting what the browser says it is.
+const BASES = "TCAG";
+const CODE = "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG";
+const codonToAa = (codon, organism) => {
+  if (organism === "mbarkeri" && codon === "TAG") return "O";
+  return CODE[BASES.indexOf(codon[0]) * 16 + BASES.indexOf(codon[1]) * 4 + BASES.indexOf(codon[2])];
+};
+
+function translate(dna, organism) {
+  const codons = dna.match(/.{3}/g);
+  if (codons[0] !== "ATG") return "No protein: the first codon is no longer AUG, so translation never starts.";
+  let protein = "";
+  for (let i = 0; i < codons.length; i++) {
+    const aa = codonToAa(codons[i], organism);
+    if (aa === "*") return `${protein} (stopped at codon ${i + 1}, ${codons[i].replaceAll("T", "U")})`;
+    protein += aa;
+  }
+  return `${protein} (no stop codon, ran off the end)`;
+}
+
 // Frozen, so it caches. Everything about the visitor goes in the user turn as data.
 const SYSTEM = `You are the lab assistant inside "Translate the gene," the interactive feature on Noel Sason's portfolio website.
 
@@ -29,7 +50,7 @@ What the visitor is looking at:
 About Noel, only these facts: a junior at UC Berkeley (Class of 2028) double majoring in Molecular & Cell Biology (developmental genetics track) and Data Science (computational biology emphasis). He does research at Lawrence Berkeley National Laboratory (statistics on microbial traits and disease), in the Lewis Lab (learning computational peptide design), and in Berkeley's CAHL lab (accessibility for an open-source math tutor). He builds Scope, study tools for students, including Lectra, an iPad app on the App Store. In 2026 he made One Base Change, a DNA mutation app, for Apple's Swift Student Challenge. If asked anything about Noel beyond these facts, say you don't know and point to the rest of the page.
 
 How to answer:
-- Answer the question using the visitor's current state, which arrives inside <state> tags. Refer to codon numbers (1 to 14) and amino acids by name when it helps.
+- Answer the question using the visitor's current state, which arrives inside <state> tags and is computed by the server from their DNA. Refer to codon numbers (1 to 14) and amino acids by name when it helps.
 - Write for a curious non-biologist. Plain text, no markdown, no headings, no lists. At most 110 words.
 - Be accurate. If something is uncertain or simplified, say so briefly.
 - Stay on this page's topics: the genetic code, translation, mutations, this gene, the name tool, and Noel's work. Politely decline anything else in one sentence.
@@ -86,7 +107,8 @@ async function giveBack(id) {
   })).catch(() => {});
 }
 
-// Validates and normalizes what the browser sends. Anything unexpected is rejected.
+// Validates what the browser sends. Only the question is free text; everything the model
+// learns about the gene is rebuilt here from the DNA and the organism.
 function parse(body) {
   let input;
   try {
@@ -94,24 +116,23 @@ function parse(body) {
   } catch {
     return null;
   }
-  const question = typeof input.question === "string" ? input.question.trim().replace(/\s+/g, " ") : "";
+  if (!input || typeof input !== "object") return null;
+  // Angle brackets would let a question close its own <question> tag.
+  const question = typeof input.question === "string" ? input.question.replace(/[<>]/g, "").trim().replace(/\s+/g, " ") : "";
   const dna = typeof input.dna === "string" ? input.dna.toUpperCase() : "";
-  const organism = input.organism === "mbarkeri" ? "Methanosarcina barkeri" : input.organism === "ecoli" ? "E. coli" : null;
-  const protein = typeof input.protein === "string" ? input.protein.toUpperCase() : "";
-  const status = typeof input.status === "string" ? input.status.slice(0, 400) : "";
+  const organism = input.organism === "mbarkeri" || input.organism === "ecoli" ? input.organism : null;
   if (question.length < 3 || question.length > 280) return null;
-  if (!/^[ACGT]{42}$/.test(dna) || !organism || !/^[A-Z]{0,20}$/.test(protein)) return null;
-  return { question, dna, organism, protein, status };
+  if (!/^[ACGT]{42}$/.test(dna) || !organism) return null;
+  return { question, dna, organism };
 }
 
-function describeState({ dna, organism, protein, status }) {
+function describeState({ dna, organism }) {
   const changed = [...dna].flatMap((base, i) => (base === GENE[i] ? [] : [`base ${i + 1} ${GENE[i]}->${base}`]));
   return [
-    `Organism: ${organism}`,
+    `Organism: ${organism === "mbarkeri" ? "Methanosarcina barkeri" : "E. coli"}`,
     `Current DNA, by codon: ${dna.match(/.{3}/g).join(" ")}`,
     `Changes from the original gene: ${changed.length ? changed.join(", ") : "none"}`,
-    `Protein from the last translation: ${protein || "(not translated yet, or empty)"}`,
-    `Last message the page showed: ${status || "(none)"}`,
+    `Protein this organism makes from it: ${translate(dna, organism)}`,
   ].join("\n");
 }
 
@@ -127,18 +148,26 @@ export const handler = async (event) => {
   const visitorKey = `ask#${day}#${visitor}`;
   const globalKey = `ask#${day}`;
 
-  if ((await take(visitorKey, PER_VISITOR_LIMIT)) === null) {
-    return reply(429, { error: "visitor_limit", message: `You've asked ${PER_VISITOR_LIMIT} questions today, the limit per visitor. Come back tomorrow.` });
-  }
-  const used = await take(globalKey, DAILY_LIMIT);
-  if (used === null) {
-    await giveBack(visitorKey);
-    return reply(429, { error: "daily_limit", message: "The assistant has answered all its questions for today. The common questions above still answer instantly." });
+  let used;
+  try {
+    if ((await take(visitorKey, PER_VISITOR_LIMIT)) === null) {
+      return reply(429, { error: "visitor_limit", message: `You've asked ${PER_VISITOR_LIMIT} questions today, the limit per visitor. Come back tomorrow.` });
+    }
+    used = await take(globalKey, DAILY_LIMIT);
+    if (used === null) {
+      await giveBack(visitorKey);
+      return reply(429, { error: "daily_limit", message: "The assistant has answered all its questions for today. The common questions above still answer instantly." });
+    }
+  } catch (error) {
+    // Usually the table throttling under a burst of requests.
+    console.error("Limit check failed", error.name);
+    return reply(503, { error: "busy", message: "The assistant is busy right now. Try again in a minute." });
   }
 
+  let response;
   try {
     const claude = await anthropic();
-    const response = await claude.beta.messages.create({
+    response = await claude.beta.messages.create({
       model: MODEL,
       max_tokens: 2000,
       betas: ["server-side-fallback-2026-07-01"],
@@ -150,15 +179,8 @@ export const handler = async (event) => {
         content: `<state>\n${describeState(input)}\n</state>\n<question>${input.question}</question>`,
       }],
     });
-
-    if (response.stop_reason === "refusal") {
-      return reply(200, { answer: "I can't help with that one. Ask me about the gene on this page instead.", remaining: DAILY_LIMIT - used });
-    }
-    const answer = response.content.filter((block) => block.type === "text").map((block) => block.text).join("").trim();
-    if (!answer) throw new Error(`Empty answer (stop_reason ${response.stop_reason})`);
-    return reply(200, { answer, remaining: DAILY_LIMIT - used });
   } catch (error) {
-    // A failed call shouldn't use up anyone's question.
+    // The model never answered, so the question doesn't count against anyone.
     await Promise.all([giveBack(globalKey), giveBack(visitorKey)]);
     if (error instanceof Anthropic.RateLimitError) {
       console.error("Anthropic rate limit", error.status);
@@ -169,4 +191,15 @@ export const handler = async (event) => {
     }
     return reply(502, { error: "unavailable", message: "The assistant couldn't answer just now. Try again in a minute." });
   }
+
+  // From here the model ran and was billed, so the question counts even if the answer is unusable.
+  if (response.stop_reason === "refusal") {
+    return reply(200, { answer: "I can't help with that one. Ask me about the gene on this page instead.", remaining: DAILY_LIMIT - used });
+  }
+  const answer = response.content.filter((block) => block.type === "text").map((block) => block.text).join("").trim();
+  if (!answer) {
+    console.error("Empty answer", response.stop_reason);
+    return reply(502, { error: "unavailable", message: "The assistant couldn't answer that one. Try asking it a different way." });
+  }
+  return reply(200, { answer, remaining: DAILY_LIMIT - used });
 };
