@@ -1,10 +1,7 @@
 <!--
 Before you paste this into "Your project" on Builder Center:
 1. Push this folder to https://github.com/NoelSason/portfolio (public). The footer's source link and the repo link in this write-up point there.
-2. Take three AWS console screenshots and save them in docs/screenshots/:
-   - amplify-console.png: Amplify > noel-sason-portfolio > main, showing the deployment and domain.
-   - cloudformation-stack.png: CloudFormation > portfolio-gene-counter > Resources tab.
-   - lambda-function-url.png: Lambda > the counter function > Configuration > Function URL (shows CORS).
+2. Run the Claude in Chrome prompt from the session. It sets up the zero-spend budget and Free Tier alerts that "Keeping it free" describes, and saves the three AWS console screenshots to docs/screenshots/aws/ (amplify-console.png, cloudformation-stack.png, lambda-function-url.png).
 3. Read "What I learned" and rewrite anything that isn't true for you. I drafted it from what happened during the build.
 Everything after this comment is the paste-ready write-up.
 -->
@@ -17,9 +14,13 @@ Code: https://github.com/NoelSason/portfolio
 
 ## What I built
 
-My portfolio is a one-page site with About me, Skills, and Projects sections and a Contact section at the end, and it runs on AWS Amplify Hosting. I'm a junior at UC Berkeley double majoring in Data Science and Molecular & Cell Biology, so I wanted the creative feature to come from the half of my background that most portfolios don't have, which is molecular biology. Every project on the page has a status label (shipped, research, prototype, or submitted), because I wanted a reader to know which things are live and which ones are hackathon prototypes.
+My portfolio is a one-page site with About me, Skills, Projects, Experience, and Contact sections, and it runs on AWS Amplify Hosting. I'm a junior at UC Berkeley double majoring in Data Science and Molecular & Cell Biology, so I wanted the creative feature to come from the half of my background that most portfolios don't have, which is molecular biology. Every project on the page has a status label (shipped, research, prototype, or submitted), because I wanted a reader to know which things are live and which ones are hackathon prototypes, and every skill links to the projects that used it, so nothing on the skills list is a claim without evidence.
 
 ![The home page](screenshots/home-light.png)
+
+![Skills, each linked to the work that used it](screenshots/skills.jpg)
+
+![Projects with status labels](screenshots/projects.jpg)
 
 ## The creative feature: Translate the gene
 
@@ -33,7 +34,9 @@ After the reveal there are two more things to try. You can select any DNA letter
 
 ![Writing a name in protein](screenshots/gene-name-tool.jpg)
 
-I kept the translator in a dialog, so the rest of the site stays a normal page with normal navigation. I made it work with a keyboard, with one tab stop for the whole sequence and arrow keys to move between bases, and it skips the animation for visitors who turn on reduced motion. I also gave the whole site a dark theme that follows the visitor's system setting.
+I kept the translator in a dialog, so the rest of the site stays a normal page with normal navigation. I made it work with a keyboard, with one tab stop for the whole sequence and arrow keys to move between bases, and it skips the animation for visitors who turn on reduced motion. I also gave the whole site a dark theme, which follows the visitor's system setting until they pick one with the toggle in the header.
+
+![The home page in dark mode](screenshots/home-dark.png)
 
 ![The site on a phone](screenshots/mobile.png)
 
@@ -41,19 +44,23 @@ I kept the translator in a dialog, so the rest of the site stays a normal page w
 
 - I host the site on AWS Amplify Hosting from the main branch as a manual deployment, and Amplify serves it through its CloudFront distribution. I set custom response headers on the app, including a Content Security Policy that only allows scripts from the site itself and only lets the page call my Lambda function URL.
 - AWS Lambda runs the reader counter, a small Node.js 22 function behind a function URL. A POST adds one reader and a GET returns the count, and CORS on the URL only allows my Amplify domain.
-- I store the count in Amazon DynamoDB as one item in an on-demand table, and the function updates it with an atomic ADD so two visitors at the same moment can't overwrite each other.
+- I store the count in Amazon DynamoDB as one item in a table provisioned at 1 read and 1 write unit, which is inside DynamoDB's always-free tier, and the function updates it with an atomic ADD so two visitors at the same moment can't overwrite each other.
 - I create the whole counter with AWS CloudFormation from one template in my repo, infra/counter.yaml, which has the table, the IAM role, the function, the function URL and its permissions, and a log group.
 - AWS IAM gives the function a role that can only read and update that one table.
-- Amazon CloudWatch Logs keeps the function's logs for 30 days.
+- Amazon CloudWatch Logs keeps the function's logs for 30 days, and the function only logs errors, so normal visits don't write anything.
 - The AWS CLI, signed in with aws login, and the AWS MCP server connected my coding agent to my AWS account.
 
 ![Architecture](screenshots/architecture.png)
 
-![The Amplify app](screenshots/amplify-console.png)
+![The Amplify app](screenshots/aws/amplify-console.png)
 
-![The CloudFormation stack](screenshots/cloudformation-stack.png)
+![The CloudFormation stack](screenshots/aws/cloudformation-stack.png)
 
-![The Lambda function URL](screenshots/lambda-function-url.png)
+![The Lambda function URL](screenshots/aws/lambda-function-url.png)
+
+## Keeping it free
+
+My AWS account is on the Free plan, which uses credits and never charges my card unless I upgrade the plan, and I made the backend fit inside the always-free limits so normal traffic doesn't use up the credits either. The counter is the only public endpoint, so if someone spams it, DynamoDB throttles the writes to about one per second and the page hides the count instead of showing an error. I also added a zero-spend budget and turned on Free Tier alerts, so I get an email if anything ever starts to cost money.
 
 ## How I built it
 

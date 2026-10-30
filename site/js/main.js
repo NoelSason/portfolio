@@ -121,5 +121,33 @@ function setUpDialog() {
   });
 }
 
+function setUpThemeToggle() {
+  const button = document.getElementById("theme-toggle");
+  const root = document.documentElement;
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const current = () => root.dataset.theme ?? (systemDark.matches ? "dark" : "light");
+
+  const label = () => {
+    const next = current() === "dark" ? "light" : "dark";
+    button.setAttribute("aria-label", `Switch to ${next} theme`);
+    button.title = `Switch to ${next} theme`;
+  };
+
+  button.addEventListener("click", () => {
+    const next = current() === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      // Storage blocked: the choice lasts until the page closes.
+    }
+    label();
+  });
+
+  systemDark.addEventListener("change", label);
+  label();
+}
+
 drawTrace(document.getElementById("trace"), GENE);
 setUpDialog();
+setUpThemeToggle();

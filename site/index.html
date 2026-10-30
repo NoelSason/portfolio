@@ -4,17 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Noel Sason</title>
-  <meta name="description" content="Noel Sason studies Data Science and Molecular & Cell Biology at UC Berkeley, does research where computing meets biology, and builds study tools for students.">
+  <meta name="description" content="Noel Sason builds software for students and studies how to evaluate AI systems. Molecular and cell biology plus data science at UC Berkeley.">
   <meta name="theme-color" content="#F3F6F9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0F1A2B" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Noel Sason">
-  <meta property="og:description" content="Data Science and Molecular & Cell Biology at UC Berkeley. There's a gene on this page with a message in it.">
+  <meta property="og:description" content="Molecular and cell biology plus data science at UC Berkeley. There's a gene on this page with a message in it.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;500;700;800&display=swap">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/theme.js"></script>
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
@@ -28,26 +29,42 @@
           <li><a href="#about">About</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#projects">Projects</a></li>
+          <li><a href="#experience">Experience</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
-      <button class="gene-button" type="button" data-open-gene>
-        <svg class="bases-glyph" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-          <rect x="1" y="5" width="2.5" height="8" rx="1" class="fill-a"/>
-          <rect x="4.8" y="2" width="2.5" height="11" rx="1" class="fill-c"/>
-          <rect x="8.6" y="7" width="2.5" height="6" rx="1" class="fill-g"/>
-          <rect x="12.4" y="4" width="2.5" height="9" rx="1" class="fill-t"/>
-        </svg>
-        Translate the gene
-      </button>
+      <div class="header-actions">
+        <button class="icon-button theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark theme">
+          <svg class="icon-moon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16.5 12.6A7 7 0 0 1 7.4 3.5a7 7 0 1 0 9.1 9.1z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="3.6"/><path d="M10 1.8v2.1M10 16.1v2.1M1.8 10h2.1M16.1 10h2.1M4.2 4.2l1.5 1.5M14.3 14.3l1.5 1.5M4.2 15.8l1.5-1.5M14.3 5.7l1.5-1.5"/></svg>
+        </button>
+        <button class="gene-button" type="button" data-open-gene>
+          <svg class="bases-glyph" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <rect x="1" y="5" width="2.5" height="8" rx="1" class="fill-a"/>
+            <rect x="4.8" y="2" width="2.5" height="11" rx="1" class="fill-c"/>
+            <rect x="8.6" y="7" width="2.5" height="6" rx="1" class="fill-g"/>
+            <rect x="12.4" y="4" width="2.5" height="9" rx="1" class="fill-t"/>
+          </svg>
+          Translate the gene
+        </button>
+      </div>
     </div>
   </header>
 
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="wrap">
+        <p class="hero-context">UC Berkeley, Class of 2028</p>
         <h1 id="hero-title">Noel Sason</h1>
-        <p class="hero-lede">I'm a junior at UC Berkeley studying Data Science and Molecular &amp; Cell Biology. I do research where computing meets biology, and I build study tools for students.</p>
+        <p class="hero-lede">I build software for students and study how to evaluate AI systems.</p>
+        <p class="hero-sub">Molecular and cell biology plus data science. I do research at Lawrence Berkeley National Laboratory and in two labs on campus, one designing proteins and one building an adaptive math tutor.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://noelsason.com/resume.pdf">View résumé</a>
+          <a class="text-link" href="mailto:noel_sason@berkeley.edu">Email me</a>
+          <a class="text-link" href="https://github.com/NoelSason">GitHub</a>
+          <a class="text-link" href="https://www.linkedin.com/in/noelsason">LinkedIn</a>
+        </div>
+        <p class="availability"><span class="availability-dot" aria-hidden="true"></span>Seeking research opportunities for summer 2027.</p>
 
         <figure class="trace-figure">
           <div class="trace-scroll">
@@ -70,14 +87,14 @@
         <h2 id="about-title">About me</h2>
         <div class="section-body">
           <div class="prose">
-            <p>I'm a junior at UC Berkeley, Class of 2028, double majoring in Data Science and Molecular &amp; Cell Biology. In data science my emphasis is computational biology. In biology I'm on the developmental genetics track.</p>
-            <p>I do research in three groups. At Lawrence Berkeley National Laboratory, I write the statistical analysis for a study of how disease changes the microbes that live in the body. In the Lewis Lab, I'm learning computational protein design. In Berkeley's Computational Approaches to Human Learning lab, I'm making the images in an open-source math tutor readable to screen readers.</p>
-            <p>Outside research, I build Scope, a set of study tools I started in early 2026: a Chrome extension that searches a student's course materials, and Lectra, an iPad app for reading and marking them up. I also co-lead the South Indian Society at Berkeley, a student organization with more than 200 members.</p>
-            <p>I want to work on AI for biology, including the evaluations that show when a model, or a published result, doesn't hold up. A lot of my recent work is that kind of checking.</p>
+            <p>I'm a junior at UC Berkeley double majoring in Molecular &amp; Cell Biology, on the developmental genetics track, and Data Science, with an emphasis in computational biology.</p>
+            <p>A lot of my research is checking whether a number means what it claims. At Berkeley Lab, that's the statistics behind a study of how disease changes the microbes in the body. On my own, it was an audit of a published brain-signal benchmark that a baseline with no brain data beats. I'm also learning computational protein design in the Lewis Lab, and I'm making the images in an open-source math tutor readable to screen readers.</p>
+            <p>Outside research, I build Scope, a set of study tools I started in early 2026: a Chrome extension that searches a student's course materials, Lectra, an iPad app for reading and marking them up, and Polya, a tutor that works only from a student's own course materials. I'm the only developer on all of them.</p>
+            <p>Off the clock, I co-run the South Indian Society at Berkeley, a student organization with more than 200 members, and I'm learning to DJ house and tech house.</p>
           </div>
           <dl class="facts">
-            <div><dt>Studying</dt><dd>Data Science and Molecular &amp; Cell Biology</dd></div>
-            <div><dt>Graduating</dt><dd>2028</dd></div>
+            <div><dt>Studying</dt><dd>Molecular &amp; Cell Biology and Data Science</dd></div>
+            <div><dt>Graduating</dt><dd>May 2028</dd></div>
             <div><dt>Based in</dt><dd>Berkeley and Santa Clarita, California</dd></div>
             <div><dt>Languages</dt><dd>English and Malayalam</dd></div>
           </dl>
@@ -89,30 +106,37 @@
       <div class="wrap section-grid">
         <h2 id="skills-title">Skills</h2>
         <div class="section-body">
+          <p class="section-note">Every skill here links to the work that used it.</p>
           <div class="skill-groups">
             <div class="skill-group">
               <h3>Programming</h3>
               <p>Python, Swift, TypeScript and JavaScript, SQL, Java, and Bash.</p>
+              <p class="used-in">Used in <a href="#scope">Scope and Lectra</a>, <a href="#overclock">Overclock</a>, and <a href="#eeg-audit">the EEG audit</a></p>
             </div>
             <div class="skill-group">
               <h3>Data and machine learning</h3>
               <p>pandas, Polars, NumPy, scikit-learn, PyTorch, and DuckDB. Statistics for messy real data: permutation tests, bootstrap intervals, and multiple-testing correction.</p>
+              <p class="used-in">Used in <a href="#eeg-audit">the EEG audit</a> and <a href="#berkeley-lab">Berkeley Lab</a></p>
             </div>
             <div class="skill-group">
               <h3>Evaluation</h3>
-              <p>Held-out test sets, honest baselines, and checks that a number means what it claims. Most of my projects have one, and some have failed it.</p>
+              <p>Held-out test sets, honest baselines, and checks that a number means what it claims. Some of my projects failed theirs, and I say so.</p>
+              <p class="used-in">Used in <a href="#eeg-audit">the EEG audit</a>, <a href="#control">Control</a>, and <a href="#overclock">Overclock</a></p>
             </div>
             <div class="skill-group">
               <h3>Apps and the web</h3>
               <p>SwiftUI, UIKit, and PDFKit on iPad and Mac. Chrome extensions, Next.js, React, and Electron.</p>
+              <p class="used-in">Used in <a href="#scope">Scope and Lectra</a>, <a href="#blink2talk">Blink2Talk</a>, and <a href="#sis-recruitment">SIS recruitment</a></p>
             </div>
             <div class="skill-group">
               <h3>Cloud and infrastructure</h3>
-              <p>AWS Amplify Hosting, Supabase (Postgres, row-level security, Edge Functions), Vercel, Docker, Linux, and Slurm clusters.</p>
+              <p>AWS (Amplify Hosting, Lambda, DynamoDB, CloudFormation), Supabase, Vercel, Docker, Linux, and Slurm clusters.</p>
+              <p class="used-in">Used in this site, <a href="#scope">Scope</a>, and <a href="#sis-recruitment">SIS recruitment</a></p>
             </div>
             <div class="skill-group">
               <h3>Biology</h3>
               <p>Molecular biology, genetics, and biochemistry. Biological ontologies and knowledge graphs. Learning BindCraft for protein design.</p>
+              <p class="used-in">Used in <a href="#berkeley-lab">Berkeley Lab</a>, <a href="#one-base-change">One Base Change</a>, and the gene on this page</p>
             </div>
           </div>
           <div class="how-i-build">
@@ -129,22 +153,23 @@
         <div class="section-body">
           <p class="section-note">Each project has a status, because a prototype and a shipped product aren't the same thing.</p>
           <ol class="project-list" role="list">
-            <li class="project">
+            <li class="project" id="scope">
               <div class="project-meta">
                 <span class="status" data-status="shipped">Shipped</span>
                 <span class="project-when">Founder, 2026 to now</span>
               </div>
               <div class="project-body">
                 <h3>Scope and Lectra</h3>
-                <p>Study tools for college students. Scope for Canvas is a Chrome extension that searches a student's course files, pages, and assignments. Lectra Notes is an iPad app for reading and marking up PDFs with Apple Pencil, on the App Store since July 2026. As of October 2026, the apps have 400+ installs and 212 registered accounts.</p>
+                <p>Study tools for college students. Scope for Canvas is a Chrome extension that searches a student's course files, pages, and assignments. Lectra Notes is an iPad app for reading and marking up PDFs with Apple Pencil, and it also runs Python, git, and a code editor on the device. It's been on the App Store since July 2026. As of October 2026, the apps have 400+ installs and 212 registered accounts.</p>
                 <p class="project-stack">Swift, SwiftUI, PDFKit, JavaScript, Supabase</p>
                 <p class="project-links">
                   <a href="https://apps.apple.com/us/app/id6759754531">Lectra on the App Store</a>
                   <a href="https://canvascope.org">Scope website</a>
+                  <a href="https://askpolya.com">Polya</a>
                 </p>
               </div>
             </li>
-            <li class="project">
+            <li class="project" id="eeg-audit">
               <div class="project-meta">
                 <span class="status" data-status="research">Research</span>
                 <span class="project-when">Independent, October 2026</span>
@@ -156,7 +181,7 @@
                 <p class="project-links"><a href="https://github.com/NoelSason/eegwords">Paper and code on GitHub</a></p>
               </div>
             </li>
-            <li class="project">
+            <li class="project" id="berkeley-lab">
               <div class="project-meta">
                 <span class="status" data-status="research">Research</span>
                 <span class="project-when">Research affiliate, 2026 to now</span>
@@ -167,22 +192,22 @@
                 <p class="project-stack">Python, DuckDB, pandas, biological ontologies</p>
               </div>
             </li>
-            <li class="project">
+            <li class="project" id="overclock">
               <div class="project-meta">
                 <span class="status" data-status="prototype">Prototype</span>
                 <span class="project-when">Cal Hacks 13.0, solo</span>
               </div>
               <div class="project-body">
                 <h3>Overclock</h3>
-                <p>A browser agent that plans a multi-app office task once, compiles the plan into a program it can check, and replays it without asking the model again. On the hackathon's mock apps and its own checker, it reconciled 500 of 500 records in a median 13.8 seconds, re-reading every write to confirm it. It failed at sign-in on an app it had never seen, so it doesn't generalize yet.</p>
+                <p>A browser agent normally looks at the page, asks a model what to do, clicks, and starts over. Overclock plans the task once, compiles the plan into a program it can check, and replays it without asking the model again. On the hackathon's mock apps and its own checker, it reconciled 500 of 500 records in a median 13.8 seconds, re-reading every write to confirm it. It failed at sign-in on an app it had never seen, so it doesn't generalize yet.</p>
                 <p class="project-stack">TypeScript, Playwright, SQLite, Claude</p>
                 <p class="project-links"><a href="https://github.com/NoelSason/Overclock">Code on GitHub</a></p>
               </div>
             </li>
-            <li class="project">
+            <li class="project" id="blink2talk">
               <div class="project-meta">
                 <span class="status" data-status="prototype">Prototype</span>
-                <span class="project-when">Cal Hacks 13.0, team of 3</span>
+                <span class="project-when">Cal Hacks 13.0, team project</span>
               </div>
               <div class="project-body">
                 <h3>Blink2Talk</h3>
@@ -191,7 +216,7 @@
                 <p class="project-links"><a href="https://github.com/NoelSason/blink2talk">Code on GitHub</a></p>
               </div>
             </li>
-            <li class="project">
+            <li class="project" id="control">
               <div class="project-meta">
                 <span class="status" data-status="prototype">Prototype</span>
                 <span class="project-when">Solo, fall 2026</span>
@@ -203,7 +228,7 @@
                 <p class="project-links"><a href="https://github.com/NoelSason/CommandSquared">Code on GitHub</a></p>
               </div>
             </li>
-            <li class="project">
+            <li class="project" id="sis-recruitment">
               <div class="project-meta">
                 <span class="status" data-status="shipped">Used live</span>
                 <span class="project-when">Co-president, September 2026</span>
@@ -214,7 +239,7 @@
                 <p class="project-stack">Next.js, TypeScript, Redis, Google APIs</p>
               </div>
             </li>
-            <li class="project">
+            <li class="project" id="one-base-change">
               <div class="project-meta">
                 <span class="status" data-status="submitted">Submitted</span>
                 <span class="project-when">Swift Student Challenge 2026</span>
@@ -226,6 +251,83 @@
               </div>
             </li>
           </ol>
+
+          <div class="also">
+            <h3>Also built</h3>
+            <ul class="also-list" role="list">
+              <li><a href="https://github.com/NoelSason/PyodideKit">PyodideKit</a><span>Real Python inside an iPhone, iPad, or Mac app, with no server. Open source.</span></li>
+              <li><a href="https://github.com/NoelSason/ios-agent-use">ios-agent-use</a><span>Lets a coding agent tap through a real iOS app and see what changed on screen.</span></li>
+              <li><span class="also-name">Noel MCP</span><span>One server my AI assistants share. Anything that sends or publishes waits for my approval.</span></li>
+              <li><a href="https://scvsarigama.com">SCV SaRiGaMa</a><span>Ticketing and check-in for a 109-household Onam celebration.</span></li>
+              <li><a href="https://github.com/NoelSason/clens">CLENS</a><span>Grocery receipts scored on ocean health, DataHacks 2026.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="experience" aria-labelledby="experience-title">
+      <div class="wrap section-grid">
+        <h2 id="experience-title">Experience</h2>
+        <div class="section-body">
+          <ol class="role-list" role="list">
+            <li class="role">
+              <p class="role-when">Oct 2026 to now</p>
+              <div>
+                <h3>Undergraduate Researcher, Lewis Lab</h3>
+                <p>Learning computational peptide design with BindCraft, run as jobs on a GPU cluster.</p>
+              </div>
+            </li>
+            <li class="role">
+              <p class="role-when">Sep 2026 to now</p>
+              <div>
+                <h3>Undergraduate Researcher, Computational Approaches to Human Learning Lab</h3>
+                <p>Giving every image in OATutor, the lab's open-source adaptive math tutor, its own description for screen-reader users.</p>
+              </div>
+            </li>
+            <li class="role">
+              <p class="role-when">Jan 2026 to now</p>
+              <div>
+                <h3>Research Affiliate, Lawrence Berkeley National Laboratory</h3>
+                <p>Statistics and tooling for KG-Microbe, which links microbiome studies to a knowledge graph of microbial traits.</p>
+              </div>
+            </li>
+            <li class="role">
+              <p class="role-when">Jun 2025 to now</p>
+              <div>
+                <h3>COPE Health Scholar, Kaiser Permanente</h3>
+                <p>Patient support on hospital floors: vital signs, mobility, and discharge coordination.</p>
+              </div>
+            </li>
+            <li class="role">
+              <p class="role-when">Sep 2024 to now</p>
+              <div>
+                <h3>Finance Director, ASUC</h3>
+                <p>Administer about $200,000 in student-organization funding: allocations, grants, reimbursements, and waivers.</p>
+              </div>
+            </li>
+            <li class="role">
+              <p class="role-when">2026 to now</p>
+              <div>
+                <h3>Co-President, South Indian Society</h3>
+                <p>Co-run a student organization of more than 200 members, after earlier finance roles. Led the 2026–27 board recruitment.</p>
+              </div>
+            </li>
+            <li class="role">
+              <p class="role-when">2024 to Feb 2026</p>
+              <div>
+                <h3>Community Service Officer, UC Berkeley Police Department</h3>
+                <p>Late-night safety escorts and campus safety shifts.</p>
+              </div>
+            </li>
+            <li class="role">
+              <p class="role-when">2023 to 2024</p>
+              <div>
+                <h3>State Secretary, California HOSA</h3>
+                <p>Conference logistics, fundraising, and board correspondence for the state organization.</p>
+              </div>
+            </li>
+          </ol>
         </div>
       </div>
     </section>
@@ -234,9 +336,10 @@
       <div class="wrap section-grid">
         <h2 id="contact-title">Contact</h2>
         <div class="section-body">
-          <p class="contact-lede">I'm looking for a Summer 2027 internship in software, machine learning, or research engineering. Email is the fastest way to reach me.</p>
+          <p class="contact-lede">I'm looking for research opportunities for summer 2027. Email is the fastest way to reach me.</p>
           <ul class="contact-list" role="list">
             <li><a href="mailto:noel_sason@berkeley.edu">noel_sason@berkeley.edu</a></li>
+            <li><a href="https://noelsason.com/resume.pdf">Résumé</a></li>
             <li><a href="https://github.com/NoelSason">GitHub</a></li>
             <li><a href="https://www.linkedin.com/in/noelsason">LinkedIn</a></li>
           </ul>
@@ -246,8 +349,10 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap">
-      <p>© 2026 Noel Sason. <a href="https://github.com/NoelSason/portfolio">Source code</a></p>
+    <div class="wrap footer-inner">
+      <p>© 2026 Noel Sason</p>
+      <p><a href="https://github.com/NoelSason/portfolio">Source code</a></p>
+      <p>Hosted on AWS</p>
     </div>
   </footer>
 

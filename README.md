@@ -5,7 +5,7 @@ A one-page portfolio with a hidden gene in it, hosted on AWS Amplify Hosting.
 - Live site: https://main.d149c0bsd6u3f4.amplifyapp.com
 - Built for the AWS Student Builder Challenge, October to November 2026.
 
-The page has About me, Skills, Projects, and Contact sections. Its creative feature, **Translate the gene**, starts from the DNA sequencing trace in the hero. Visitors translate the gene with an *E. coli* ribosome, which stops at `MEETN` because UAG is a stop codon. Then they switch to *Methanosarcina barkeri*, which reads UAG as pyrrolysine (`O`), and the protein spells `MEETNOELSASON`. Visitors can also mutate any base, write their own name in protein, and see how many people have read the message.
+The page has About me, Skills, Projects, Experience, and Contact sections, plus a light and dark theme toggle. Its creative feature, **Translate the gene**, starts from the DNA sequencing trace in the hero. Visitors translate the gene with an *E. coli* ribosome, which stops at `MEETN` because UAG is a stop codon. Then they switch to *Methanosarcina barkeri*, which reads UAG as pyrrolysine (`O`), and the protein spells `MEETNOELSASON`. Visitors can also mutate any base, write their own name in protein, and see how many people have read the message.
 
 ## Run it locally
 
@@ -24,7 +24,8 @@ npm test    # runs the genetics unit tests with node:test
 | `site/css/styles.css` | Design tokens, layout, and light and dark themes |
 | `site/js/genetics.js` | Codon table, translation, mutation classes, and name encoding. No DOM code, so Node tests it. |
 | `site/js/translator.js` | The translator dialog: ribosome animation, base editing, and the name tool |
-| `site/js/main.js` | Draws the sequencing trace and opens the dialog (also from `#gene` links) |
+| `site/js/main.js` | Draws the sequencing trace, opens the dialog (also from `#gene` links), and runs the theme toggle |
+| `site/js/theme.js` | Applies a saved theme before first paint. A classic script, because the CSP blocks inline scripts. |
 | `site/js/counter.js` | Calls the reader counter. Any failure hides the count line. |
 | `tests/genetics.test.mjs` | Unit tests for the genetics logic |
 | `infra/counter.yaml` | CloudFormation template for the reader counter |
@@ -40,12 +41,16 @@ npm test    # runs the genetics unit tests with node:test
 |---|---|
 | AWS Amplify Hosting | Serves `site/` over HTTPS through Amplify's CloudFront distribution. App `d149c0bsd6u3f4`, branch `main`, manual deployments. |
 | AWS Lambda | `POST` adds one reader and `GET` returns the count. Node.js 22, exposed through a function URL with CORS limited to the site's origin and `localhost:4173`. |
-| Amazon DynamoDB | One on-demand table with one item. The function uses an atomic `ADD`, so concurrent readers can't overwrite each other. |
+| Amazon DynamoDB | One table with one item, provisioned at 1 read and 1 write unit (inside the always-free 25 and 25). The function uses an atomic `ADD`, so concurrent readers can't overwrite each other. |
 | AWS CloudFormation | Stack `portfolio-gene-counter` in `us-east-1` creates the table, role, function, function URL, permissions, and log group from `infra/counter.yaml`. |
 | AWS IAM | The function's role can only call `GetItem` and `UpdateItem` on that one table. |
-| Amazon CloudWatch Logs | Keeps the function's logs for 30 days. |
+| Amazon CloudWatch Logs | Keeps the function's logs for 30 days. The function logs errors only (`ApplicationLogLevel: ERROR`, `SystemLogLevel: WARN`). |
 
 The counter is public on purpose and has no authentication, so anyone can inflate it with repeated `POST` requests. Each browser counts itself once, using `localStorage`. The count is a fun number, not a metric.
+
+### Cost
+
+The account is on the AWS Free plan (credits, no charges unless the plan is upgraded, expires 2027-04-30). The counter stays inside the always-free limits: DynamoDB's provisioned 1/1 units throttle spam to about one write per second, and Lambda's 1M free requests a month cover normal traffic. Amplify Hosting traffic draws on the plan's credits. Don't upgrade the account plan unless the site needs to outlive the Free plan.
 
 ### Response headers
 

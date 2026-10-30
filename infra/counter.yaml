@@ -9,10 +9,15 @@ Parameters:
     Description: The portfolio's origin for CORS, for example https://main.d123abc.amplifyapp.com
 
 Resources:
+  # Provisioned at 1 read and 1 write unit, inside DynamoDB's always-free 25/25 units.
+  # Spam gets throttled instead of drawing on credits, and the page hides the count on errors.
   CounterTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      BillingMode: PAY_PER_REQUEST
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -52,6 +57,11 @@ Resources:
       Role: !GetAtt CounterRole.Arn
       MemorySize: 128
       Timeout: 5
+      # Log errors only, so each request doesn't write START/END/REPORT lines.
+      LoggingConfig:
+        LogFormat: JSON
+        ApplicationLogLevel: ERROR
+        SystemLogLevel: WARN
       Environment:
         Variables:
           TABLE_NAME: !Ref CounterTable
