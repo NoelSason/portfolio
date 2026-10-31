@@ -42,7 +42,7 @@ You can also type your first name and get it back as codons, with a verdict on w
 
 ![Writing a name in protein](screenshots/gene-name-tool.jpg)
 
-The dialog also has an assistant you can ask about what's on screen. It sees what you see: the organism, your edits, and the last result. So after a mutation you can ask "why did my change turn the N into a T?" and get an answer about codon 5 specifically. Three common questions have prepared answers that show up instantly. Anything else goes to Claude through AWS Lambda, limited to 10 questions a day across all visitors and 3 per visitor, and the page labels which answers came from the model. It declines questions that aren't about the page, and anything that could help someone cause harm with biology.
+The dialog also has an assistant you can ask about what's on screen. It sees what you see: the organism, your edits, and the last result. So after a mutation you can ask "why did my change turn the N into a T?" and get an answer about codon 5 specifically. Three common questions have prepared answers that show up instantly. Anything else goes to Claude through AWS Lambda, limited to 10 questions a day across all visitors and 3 per visitor, raised to 50 and 10 during the judging weeks, and the page labels which answers came from the model. It declines questions that aren't about the page, and anything that could help someone cause harm with biology.
 
 ![The assistant answering a question about a mutation](screenshots/assistant.jpg)
 

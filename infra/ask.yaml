@@ -29,6 +29,24 @@ Parameters:
     Type: Number
     Default: 3
     Description: Questions per day per visitor (by hashed IP).
+  # Judging runs the weeks of Nov 9 and Nov 16, 2026. The window is in UTC dates and ends a day
+  # late so it covers all of Nov 20 in Pacific time. Outside it, the limits above apply.
+  JudgingStart:
+    Type: String
+    Default: "2026-11-09"
+    Description: First UTC date (YYYY-MM-DD) of the higher judging limits.
+  JudgingEnd:
+    Type: String
+    Default: "2026-11-21"
+    Description: Last UTC date (YYYY-MM-DD) of the higher judging limits.
+  JudgingDailyLimit:
+    Type: Number
+    Default: 50
+    Description: Questions per day across all visitors during judging.
+  JudgingPerVisitorLimit:
+    Type: Number
+    Default: 10
+    Description: Questions per day per visitor during judging, since judges may share one office network.
 
 Resources:
   AskRole:
@@ -83,6 +101,10 @@ Resources:
           ANTHROPIC_KEY_PARAM: !Ref AnthropicKeyParameter
           ASK_DAILY_LIMIT: !Ref DailyLimit
           ASK_PER_VISITOR_LIMIT: !Ref PerVisitorLimit
+          JUDGING_START: !Ref JudgingStart
+          JUDGING_END: !Ref JudgingEnd
+          JUDGING_DAILY_LIMIT: !Ref JudgingDailyLimit
+          JUDGING_PER_VISITOR_LIMIT: !Ref JudgingPerVisitorLimit
 
   AskLogGroup:
     Type: AWS::Logs::LogGroup

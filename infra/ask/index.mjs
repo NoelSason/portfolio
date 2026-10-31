@@ -1,5 +1,6 @@
 // "Ask about this gene": answers one visitor question about the translator's current state.
 // Limits: ASK_DAILY_LIMIT questions a day for everyone, ASK_PER_VISITOR_LIMIT per visitor.
+// Between JUDGING_START and JUDGING_END (UTC dates, inclusive) the JUDGING_* limits apply instead.
 // The Anthropic key lives in SSM Parameter Store (SecureString) and is read once per cold start.
 import { createHash } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
@@ -9,8 +10,19 @@ import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 const db = new DynamoDBClient({});
 const ssm = new SSMClient({});
 const TABLE = process.env.TABLE_NAME;
-const DAILY_LIMIT = Number(process.env.ASK_DAILY_LIMIT ?? 10);
-const PER_VISITOR_LIMIT = Number(process.env.ASK_PER_VISITOR_LIMIT ?? 3);
+const NORMAL_LIMITS = {
+  daily: Number(process.env.ASK_DAILY_LIMIT ?? 10),
+  perVisitor: Number(process.env.ASK_PER_VISITOR_LIMIT ?? 3),
+};
+const JUDGING_LIMITS = {
+  daily: Number(process.env.JUDGING_DAILY_LIMIT ?? NORMAL_LIMITS.daily),
+  perVisitor: Number(process.env.JUDGING_PER_VISITOR_LIMIT ?? NORMAL_LIMITS.perVisitor),
+};
+
+// ISO dates compare correctly as strings, so the window needs no scheduled job to start or end.
+export function limitsFor(day, start = process.env.JUDGING_START, end = process.env.JUDGING_END) {
+  return start && end && day >= start && day <= end ? JUDGING_LIMITS : NORMAL_LIMITS;
+}
 const MODEL = "claude-opus-5-5";
 
 const GENE = "ATGGAGGAAACCAACTAGGAGCTGTCCGCCAGCTAGAATTAA";
@@ -144,6 +156,7 @@ export const handler = async (event) => {
 
   // Per-visitor and global daily limits, checked before any model call. IPs are only stored hashed.
   const day = today();
+  const { daily: DAILY_LIMIT, perVisitor: PER_VISITOR_LIMIT } = limitsFor(day);
   const visitor = createHash("sha256").update(`${day}:${event.requestContext.http.sourceIp}`).digest("hex").slice(0, 24);
   const visitorKey = `ask#${day}#${visitor}`;
   const globalKey = `ask#${day}`;
